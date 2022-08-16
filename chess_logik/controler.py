@@ -62,7 +62,7 @@ class Game():
                 get_figure(figure)
             except ValueError:
                 print('Not exist figure')
-            else: #nie potrzebny
+            else:  # nie potrzebny
                 field = input('start - ')
                 try:
                     get_field(field)
@@ -98,6 +98,6 @@ class Game():
 
 
 
-a=Game()
-
-print(a.get('bob', 'rob'))
+# a=Game()
+#
+# print(a.get('bob', 'rob'))

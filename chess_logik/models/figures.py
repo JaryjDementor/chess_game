@@ -1,3 +1,4 @@
+from ..controler import number_to_letter, letter_to_number1
 
 class Boards_field:
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
@@ -9,14 +10,56 @@ class Figure(Boards_field):
         self.field = field
         # self.figura = figure
 
-    def list_available_moves(self):  # list_available_moves(),
+    def list_available_moves(self, color, desk):  # list_available_moves(),
         pass
 
-    def validate_move(self, dest_field):  # informującą, czy możliwy jest ruch na wskazane pole.
-        if dest_field in self.list_available_moves():
+    def validate_move(self, dest_field, color, desk):  # informującą, czy możliwy jest ruch na wskazane pole.
+        if dest_field in self.list_available_moves(color, desk):
             return dest_field
         else:
             return []
+
+
+class Pawn(Figure):
+    def list_available_moves(self, color, desk):
+        list_moves = []
+        cor_left = number_to_letter([str(int(self.field[0]) - 1) + '.' + str(int(self.field[-1]) + 1)])[0]
+        cor_right = number_to_letter([str(int(self.field[0]) + 1) + '.' + str(int(self.field[0]) + 1)])[0]
+        cor_y = 1
+        color_figure = 'b'
+        field = number_to_letter([self.field])[0]
+
+        if self.field in self.board:
+            if color == 'black':
+                cor_y = -1
+                color_figure = 'w'
+
+            if not desk.at[int(field[-1]) + cor_y, field[0]]:
+                list_moves.append(self.field[0] + '.' + str(int(self.field[-1]) + cor_y))
+
+            try:
+                if desk.at[int(cor_left[-1]), cor_left[0]][0] == color_figure:
+                    list_moves.append(letter_to_number1(cor_left))
+
+            except IndexError:
+                pass
+
+            try:
+                if desk.at[int(cor_right[-1]), cor_right[0]][0] == color_figure:
+                    list_moves.append(letter_to_number1(cor_right))
+
+            except IndexError:
+                pass
+
+        return list_moves
+
+
+
+
+
+
+
+
 
 
 class Rook(Figure):
@@ -134,14 +177,16 @@ class Knight(Figure):
         return list_moves
 
 
-class Pawn(Figure):
-    def list_available_moves(self):
+# class Pawn(Figure):
+#     def list_available_moves(self):
+#
+#         if self.field in self.board and self.field[-1] != "8":
+#             list_moves = []
+#             y = int(self.field[-1]) + 1
+#
+#             list_moves.append(self.field[:2] + str(y))
+#             return list_moves
+#         else:
+#             return []
 
-        if self.field in self.board and self.field[-1] != "8":
-            list_moves = []
-            y = int(self.field[-1]) + 1
 
-            list_moves.append(self.field[:2] + str(y))
-            return list_moves
-        else:
-            return []
