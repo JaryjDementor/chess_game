@@ -1,15 +1,5 @@
-from models.figures import Boards_field, King, Queen, Rook, Bishop, Pawn, Knight
+from models.figures import Boards_field, King, Queen, Rook, Bishop, Pawn, Knight, letter_to_number1, number_to_letter
 from models.model import Player1, Player2, Move
-
-def letter_to_number1(field):  # example: a1 > 1.1; c1 > 3.1
-    board_field = Boards_field()
-    new_field = (
-        str(board_field.letters_board.index(field[0]) + 1) + "." + field[1:]
-    )
-    if new_field in board_field.board:
-        return new_field
-    else:
-        return None
 
 def get_field(field):
     board_field = Boards_field()
@@ -31,13 +21,6 @@ def get_figure(figure):
         return dict_class_figurs[figure[2:]]
     else:
         raise ValueError('Not exist figure')
-
-def number_to_letter(list_moves):  # example: 1.1 > a1; 3.1 > c1
-    moves_list = []
-    for i in list_moves:
-        b = Boards_field.letters_board[int(i[0]) - 1] + i[-1]
-        moves_list.append(b)
-    return moves_list
 
 
 class Game():
