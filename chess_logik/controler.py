@@ -32,11 +32,11 @@ class Game():
         player2 = Player2()
         player2.name, cordinates_figures_player2 = name_player2, player2.figures()
 
-        board = game.start(cordinates_figures_player1, cordinates_figures_player2)
-        print(board)
+        start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
+        print(start_game)
         value_for_while = 0
         queue = 'player1'
-
+        color = 'white'
         while value_for_while == 0:
 
             figure = input('figure - ')
@@ -53,23 +53,25 @@ class Game():
                     print('Not exist field')
                 else:
                     numeric_field = get_field(field)
-                    if numeric_field and board.at[int(field[1]), field[0]] == figure:
+                    if numeric_field and start_game.at[int(field[1]), field[0]] == figure:
                         step = input('step - ')
 
                         class_figure = get_figure(figure)(numeric_field)
                         numeric_dest_field = get_field(step)
-                        dest_field = class_figure.validate_move(numeric_dest_field)
+                        dest_field = class_figure.validate_move(numeric_dest_field, color, start_game)
                         if dest_field:
                             if queue == 'player1':
                                 for i in cordinates_figures_player1:
                                     if i[1] == field:
                                         i[1] = step
                                 queue = 'player2'
+                                color = 'black'
                             elif queue == 'player2':
                                 for i in cordinates_figures_player2:
                                     if i[1] == field:
                                         i[1] = step
                                 queue = 'player1'
+                                color = 'white'
                             start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
                             print(start_game)
                         else:
@@ -81,6 +83,6 @@ class Game():
 
 
 
-# a=Game()
-#
-# print(a.get('bob', 'rob'))
+a=Game()
+
+print(a.get('bob', 'rob'))
