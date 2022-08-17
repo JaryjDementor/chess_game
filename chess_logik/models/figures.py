@@ -85,24 +85,24 @@ class Rook(Figure):
             for i in self.board:
                 if self.field[0] == i[0]:
                     field = number_to_letter([i])[0]
-                    print(field)
-                    if not desk.at[int(field[-1]), field[0]]:
-                        list_moves.append(i)
-                    else:
+
+                    if desk.at[int(field[-1]), field[0]]:
                         if desk.at[int(field[-1]), field[0]][0] == color_figure:
                             list_moves.append(i)
                         break
 
+                    list_moves.append(i)
+
             for i in self.board:
                 if self.field[-1] == i[-1]:
                     field = number_to_letter([i])[0]
-                    # print(field1)
-                    if not desk.at[int(field[-1]), field[0]]:
-                        list_moves.append(i)
-                    else:
+
+                    if desk.at[int(field[-1]), field[0]]:
                         if desk.at[int(field[-1]), field[0]][0] == color_figure:
                             list_moves.append(i)
                         break
+
+                    list_moves.append(i)
 
         return list_moves
 
@@ -113,10 +113,14 @@ class Bishop(Figure):
         color_figure = 'b'
         field = ''
         cor_move_bishop = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
+
         if color == 'black':
             color_figure = 'w'
+
         for i in cor_move_bishop:
+
             while number_field_for_while in self.board or number_field_for_while[0] != '8' or number_field_for_while[-1] != '8':
+
                 x = int(number_field_for_while[0])
                 y = int(number_field_for_while[-1])
                 new_number_field_for_while = str(x + i[0]) + "." + str(y + i[-1])
@@ -124,13 +128,16 @@ class Bishop(Figure):
                 if not new_number_field_for_while in self.board:
                     number_field_for_while = self.field
                     break
+
                 field = number_to_letter([new_number_field_for_while])[0]
+
                 try:
                     if desk.at[int(field[-1]), field[0]][0]:
                         number_field_for_while = self.field
                         if desk.at[int(field[-1]), field[0]][0] == color_figure:
                             list_moves.append(new_number_field_for_while)
                         break
+
                 except IndexError:
                     pass
 
@@ -141,42 +148,10 @@ class Bishop(Figure):
         return list_moves
 
 
-class King(Figure):
-    def list_available_moves(self):
-
-        list_moves = []
-        list_cor = [
-            [-1, 1],
-            [1, 1],
-            [1, -1],
-            [-1, -1],
-            [-1, 0],
-            [0, -1],
-            [1, 0],
-            [0, 1],
-        ]
-        for i in list_cor:
-            x = int(self.field[0]) + i[0]
-            y = int(self.field[-1]) + i[1]
-            cor_xy = str(x) + "." + str(y)
-            if x != 0 and y != 0 and cor_xy in self.board:
-                list_moves.append(cor_xy)
-        return list_moves
-
-
-class Queen(Figure):
-    def list_available_moves(self):
-        bishop = Bishop(self.field)
-        rook = Rook(self.field)
-        list_moves_bishop = bishop.list_available_moves()
-        list_moves_rook = rook.list_available_moves()
-        for i in list_moves_rook:
-            list_moves_bishop.append(i)
-        return list_moves_bishop
-
 class Knight(Figure):
-    def list_available_moves(self):
+    def list_available_moves(self, color, desk):
         list_moves = []
+        color_figure = 'b'
         list_cor = [
             [-1, 2],
             [-2, 1],
@@ -187,13 +162,91 @@ class Knight(Figure):
             [2, 1],
             [1, 2],
         ]
-        for i in list_cor:
-            x = int(self.field[0]) + i[0]
-            y = int(self.field[-1]) + i[-1]
-            cor_xy = str(x) + "." + str(y)
-            if x > 0 and y > 0 and cor_xy in self.board:
-                list_moves.append(cor_xy)
+        if self.field in self.board:
+            if color == 'black':
+                color_figure = 'w'
+
+            for i in list_cor:
+                x = int(self.field[0]) + i[0]
+                y = int(self.field[-1]) + i[-1]
+                cor_xy = str(x) + "." + str(y)
+                if cor_xy in self.board:
+                    field = number_to_letter([cor_xy])[0]
+                    if not desk.at[int(field[-1]), field[0]]:
+                        list_moves.append(cor_xy)
+                    else:
+                        if desk.at[int(field[-1]), field[0]][0] == color_figure:
+                            list_moves.append(cor_xy)
+
         return list_moves
+
+
+class Queen(Figure):
+    def list_available_moves(self, color, desk):
+        bishop = Bishop(self.field)
+        rook = Rook(self.field)
+        list_moves_bishop = bishop.list_available_moves(color, desk)
+        list_moves_rook = rook.list_available_moves(color, desk)
+        for i in list_moves_rook:
+            list_moves_bishop.append(i)
+        return list_moves_bishop
+
+
+class King(Figure):
+    def list_available_moves(self, color, desk):
+
+        list_moves = []
+        color_figure = 'b'
+        list_cor = [
+            [-1, 1],
+            [1, 1],
+            [1, -1],
+            [-1, -1],
+            [-1, 0],
+            [0, -1],
+            [1, 0],
+            [0, 1],
+        ]
+        if self.field in self.board:
+            if color == 'black':
+                color_figure = 'w'
+
+            for i in list_cor:
+                x = int(self.field[0]) + i[0]
+                y = int(self.field[-1]) + i[1]
+                cor_xy = str(x) + "." + str(y)
+                if x != 0 and y != 0 and cor_xy in self.board:
+                    field = number_to_letter([cor_xy])[0]
+
+                    if not desk.at[int(field[-1]), field[0]]:
+                        list_moves.append(cor_xy)
+                    else:
+                        if desk.at[int(field[-1]), field[0]] == color_figure:
+                            list_moves.append(cor_xy)
+
+        return list_moves
+
+
+# class Knight(Figure):
+#     def list_available_moves(self):
+#         list_moves = []
+#         list_cor = [
+#             [-1, 2],
+#             [-2, 1],
+#             [-2, -1],
+#             [-1, -2],
+#             [1, -2],
+#             [2, -1],
+#             [2, 1],
+#             [1, 2],
+#         ]
+#         for i in list_cor:
+#             x = int(self.field[0]) + i[0]
+#             y = int(self.field[-1]) + i[-1]
+#             cor_xy = str(x) + "." + str(y)
+#             if x > 0 and y > 0 and cor_xy in self.board:
+#                 list_moves.append(cor_xy)
+#         return list_moves
 
 
 
@@ -266,5 +319,27 @@ class Knight(Figure):
 #                 number_field_for_while = new_number_field_for_while
 #                 break
 #
+#         return list_moves
+
+# class King(Figure):
+#     def list_available_moves(self):
+#
+#         list_moves = []
+#         list_cor = [
+#             [-1, 1],
+#             [1, 1],
+#             [1, -1],
+#             [-1, -1],
+#             [-1, 0],
+#             [0, -1],
+#             [1, 0],
+#             [0, 1],
+#         ]
+#         for i in list_cor:
+#             x = int(self.field[0]) + i[0]
+#             y = int(self.field[-1]) + i[1]
+#             cor_xy = str(x) + "." + str(y)
+#             if x != 0 and y != 0 and cor_xy in self.board:
+#                 list_moves.append(cor_xy)
 #         return list_moves
 
