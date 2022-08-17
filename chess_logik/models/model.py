@@ -30,12 +30,19 @@ class User(Color_figure):
     def __int__(self, name):
         self.name = name
 
+    def lost_figurs(self, figure):
+        list_lost_figurs = []
+        list_lost_figurs.append(figure)
+        return list_lost_figurs
+
 
 class Player1(User):
 
     def figures(self):
         figurs = self.get_white_figures()
         return figurs
+
+
 
 
 
