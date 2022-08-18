@@ -1,4 +1,13 @@
 
+def get_field(field):
+    board_field = Boards_field()
+
+    numeric_field = letter_to_number1(field)
+    if numeric_field in board_field.board:
+        return numeric_field
+    else:
+        raise ValueError
+
 def letter_to_number1(field):  # example: a1 > 1.1; c1 > 3.1
     board_field = Boards_field()
     new_field = (
