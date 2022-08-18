@@ -192,39 +192,39 @@ class Queen(Figure):
         return list_moves_bishop
 
 
-class King(Figure):
-    def list_available_moves(self, color, desk):
-
-        list_moves = []
-        color_figure = 'b'
-        list_cor = [
-            [-1, 1],
-            [1, 1],
-            [1, -1],
-            [-1, -1],
-            [-1, 0],
-            [0, -1],
-            [1, 0],
-            [0, 1],
-        ]
-        if self.field in self.board:
-            if color == 'black':
-                color_figure = 'w'
-
-            for i in list_cor:
-                x = int(self.field[0]) + i[0]
-                y = int(self.field[-1]) + i[1]
-                cor_xy = str(x) + "." + str(y)
-                if x != 0 and y != 0 and cor_xy in self.board:
-                    field = number_to_letter([cor_xy])[0]
-
-                    if not desk.at[int(field[-1]), field[0]]:
-                        list_moves.append(cor_xy)
-                    else:
-                        if desk.at[int(field[-1]), field[0]] == color_figure:
-                            list_moves.append(cor_xy)
-
-        return list_moves
+# class King(Figure):
+#     def list_available_moves(self, color, desk):
+#
+#         list_moves = []
+#         color_figure = 'b'
+#         list_cor = [
+#             [-1, 1],
+#             [1, 1],
+#             [1, -1],
+#             [-1, -1],
+#             [-1, 0],
+#             [0, -1],
+#             [1, 0],
+#             [0, 1],
+#         ]
+#         if self.field in self.board:
+#             if color == 'black':
+#                 color_figure = 'w'
+#
+#             for i in list_cor:
+#                 x = int(self.field[0]) + i[0]
+#                 y = int(self.field[-1]) + i[1]
+#                 cor_xy = str(x) + "." + str(y)
+#                 if x != 0 and y != 0 and cor_xy in self.board:
+#                     field = number_to_letter([cor_xy])[0]
+#
+#                     if not desk.at[int(field[-1]), field[0]]:
+#                         list_moves.append(cor_xy)
+#                     else:
+#                         if desk.at[int(field[-1]), field[0]] == color_figure:
+#                             list_moves.append(cor_xy)
+#
+#         return list_moves
 
 
 # class Knight(Figure):
