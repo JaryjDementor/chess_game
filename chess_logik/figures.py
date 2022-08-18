@@ -16,6 +16,17 @@ def number_to_letter(list_moves):  # example: 1.1 > a1; 3.1 > c1
         moves_list.append(b)
     return moves_list
 
+def get_figure(figure):
+    dict_class_figurs = {'k': King,
+         'q': Queen,
+         'r': Rook,
+         'b': Bishop,
+         'kn': Knight,
+         'p': Pawn}
+    if figure[2:] in dict_class_figurs:
+        return dict_class_figurs[figure[2:]]
+    else:
+        raise ValueError('Not exist figure')
 
 
 class Boards_field:
@@ -193,6 +204,7 @@ class Queen(Figure):
 
 
 class King(Figure):
+
     def list_available_moves(self, color, desk):
 
         list_moves = []
@@ -221,125 +233,32 @@ class King(Figure):
                     if not desk.at[int(field[-1]), field[0]]:
                         list_moves.append(cor_xy)
                     else:
-                        if desk.at[int(field[-1]), field[0]] == color_figure:
+                        if desk.at[int(field[-1]), field[0]][0] == color_figure:
                             list_moves.append(cor_xy)
 
         return list_moves
 
+    def validate_move(self, dest_field, color, desk): # król musi sprawdzić czy nie zagrożone pole
+        if not dest_field in self.list_available_moves(color, desk):
+            return []
 
-# class Knight(Figure):
-#     def list_available_moves(self):
-#         list_moves = []
-#         list_cor = [
-#             [-1, 2],
-#             [-2, 1],
-#             [-2, -1],
-#             [-1, -2],
-#             [1, -2],
-#             [2, -1],
-#             [2, 1],
-#             [1, 2],
-#         ]
-#         for i in list_cor:
-#             x = int(self.field[0]) + i[0]
-#             y = int(self.field[-1]) + i[-1]
-#             cor_xy = str(x) + "." + str(y)
-#             if x > 0 and y > 0 and cor_xy in self.board:
-#                 list_moves.append(cor_xy)
-#         return list_moves
+        color_figure = 'b'
+        if color == 'black':
+            color_figure = 'w'
 
-
-
-#
-# class Rook(Figure):
-#     def list_available_moves(self):
-#         list_moves = []
-#         for i in self.board:
-#             if self.field[0] == i[0] or self.field[-1] == i[-1]:
-#                 list_moves.append(i)
-#         list_moves.remove(self.field)
-#         return list_moves
-
-# class Pawn(Figure):
-#     def list_available_moves(self):
-#
-#         if self.field in self.board and self.field[-1] != "8":
-#             list_moves = []
-#             y = int(self.field[-1]) + 1
-#
-#             list_moves.append(self.field[:2] + str(y))
-#             return list_moves
-#         else:
-#             return []
-
-# class Bishop(Figure):
-#     def list_available_moves(self):
-#         super().list_available_moves()
-#         number_field_for_while = self.field
-#
-#         list_moves = []
-#         while number_field_for_while in self.board:
-#             x = int(number_field_for_while[0])
-#             y = int(number_field_for_while[-1])
-#             new_number_field_for_while = str(x + 1) + "." + str(y + 1)
-#             if new_number_field_for_while in self.board:
-#                 list_moves.append(new_number_field_for_while)
-#                 number_field_for_while = new_number_field_for_while
-#             else:
-#                 number_field_for_while = self.field
-#                 break
-#         while number_field_for_while in self.board:
-#             x = int(number_field_for_while[0])
-#             y = int(number_field_for_while[-1])
-#             new_number_field_for_while = str(x - 1) + "." + str(y - 1)
-#             if new_number_field_for_while in self.board:
-#                 list_moves.append(new_number_field_for_while)
-#                 number_field_for_while = new_number_field_for_while
-#             else:
-#                 number_field_for_while = self.field
-#                 break
-#         while number_field_for_while in self.board:
-#             x = int(number_field_for_while[0])
-#             y = int(number_field_for_while[-1])
-#             new_number_field_for_while = str(x + 1) + "." + str(y - 1)
-#             if new_number_field_for_while in self.board:
-#                 list_moves.append(new_number_field_for_while)
-#                 number_field_for_while = new_number_field_for_while
-#             else:
-#                 number_field_for_while = self.field
-#                 break
-#         while number_field_for_while in self.board:
-#             x = int(number_field_for_while[0])
-#             y = int(number_field_for_while[-1])
-#             new_number_field_for_while = str(x - 1) + "." + str(y + 1)
-#             if new_number_field_for_while in self.board:
-#                 list_moves.append(new_number_field_for_while)
-#                 number_field_for_while = new_number_field_for_while
-#             else:
-#                 number_field_for_while = new_number_field_for_while
-#                 break
-#
-#         return list_moves
-
-# class King(Figure):
-#     def list_available_moves(self):
-#
-#         list_moves = []
-#         list_cor = [
-#             [-1, 1],
-#             [1, 1],
-#             [1, -1],
-#             [-1, -1],
-#             [-1, 0],
-#             [0, -1],
-#             [1, 0],
-#             [0, 1],
-#         ]
-#         for i in list_cor:
-#             x = int(self.field[0]) + i[0]
-#             y = int(self.field[-1]) + i[1]
-#             cor_xy = str(x) + "." + str(y)
-#             if x != 0 and y != 0 and cor_xy in self.board:
-#                 list_moves.append(cor_xy)
-#         return list_moves
-
+        count_index = 9
+        count_column = 0
+        for row in desk.values:
+            count_index -= 1
+            for value in row:
+                count_column += 1
+                try:
+                    if value[0] == color_figure:
+                        field = str(count_column) + '.' + str(count_index)
+                        class_figure = get_figure(value)(field)
+                        if dest_field in class_figure.list_available_moves(color, desk):
+                            return []
+                except IndexError:
+                    pass
+            count_column = 0
+        return dest_field

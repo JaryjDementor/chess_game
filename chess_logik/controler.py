@@ -1,5 +1,17 @@
-from models.figures import Boards_field, King, Queen, Rook, Bishop, Pawn, Knight, letter_to_number1, number_to_letter
-from models.model import Player1, Player2, Move
+from models import Player1, Player2, Move
+from figures import Boards_field, King, Queen, Rook, Bishop, Pawn, Knight
+
+
+def letter_to_number1(field):  # example: a1 > 1.1; c1 > 3.1
+    board_field = Boards_field()
+    new_field = (
+        str(board_field.letters_board.index(field[0]) + 1) + "." + field[1:]
+    )
+    if new_field in board_field.board:
+        return new_field
+    else:
+        return None
+
 
 def get_field(field):
     board_field = Boards_field()
@@ -21,7 +33,6 @@ def get_figure(figure):
         return dict_class_figurs[figure[2:]]
     else:
         raise ValueError('Not exist figure')
-
 
 class Game():
     def get(self, name_player1, name_player2):
