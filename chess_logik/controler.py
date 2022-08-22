@@ -1,5 +1,5 @@
 from models import Player1, Player2, Move
-from figures import get_figure, get_field
+from figures import get_figure, get_field, number_to_letter
 
 
 class Game():
@@ -12,10 +12,12 @@ class Game():
         player2.name, cordinates_figures_player2 = name_player2, player2.figures()
 
         start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
-        print(start_game)
+        for i in start_game:
+            print(i)
         value_for_while = 0
         queue = 'player1'
         color = 'white'
+        opponents_figure = None
         while value_for_while == 0:
 
             figure = input('figure - ')
@@ -38,21 +40,37 @@ class Game():
                         class_figure = get_figure(figure)(numeric_field)
                         numeric_dest_field = get_field(step)
                         dest_field = class_figure.validate_move(numeric_dest_field, color, start_game)
+
                         if dest_field:
+                            dest_field_to_later = number_to_letter([dest_field])[0]
+                            try:
+                                opponents_figure = start_game.at[int(dest_field_to_later[-1]), dest_field_to_later[0]]
+                            except IndexError:
+                                pass
+
+
                             if queue == 'player1':
+                                if opponents_figure:
+                                    player1.taken_figure.append(opponents_figure)
                                 for i in cordinates_figures_player1:
                                     if i[1] == field:
                                         i[1] = step
                                 queue = 'player2'
                                 color = 'black'
                             elif queue == 'player2':
+                                if opponents_figure:
+                                    player2.taken_figure(opponents_figure)
                                 for i in cordinates_figures_player2:
                                     if i[1] == field:
                                         i[1] = step
                                 queue = 'player1'
                                 color = 'white'
+                            opponents_figure = None
                             start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
-                            print(start_game)
+                            print(player2.taken_figure)
+                            for i in start_game:
+                                print(i)
+                            print(player1.taken_figure)
                         else:
                             print('Invalid move')
 

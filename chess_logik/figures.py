@@ -10,9 +10,7 @@ def get_field(field):
 
 def letter_to_number1(field):  # example: a1 > 1.1; c1 > 3.1
     board_field = Boards_field()
-    new_field = (
-        str(board_field.letters_board.index(field[0]) + 1) + "." + field[1:]
-    )
+    new_field = str(board_field.numbers_board.index(field[-1])) + '.' + str(board_field.letters_board.index(field[0]))
     if new_field in board_field.board:
         return new_field
     else:
@@ -20,8 +18,9 @@ def letter_to_number1(field):  # example: a1 > 1.1; c1 > 3.1
 
 def number_to_letter(list_moves):  # example: 1.1 > a1; 3.1 > c1
     moves_list = []
+    board_field = Boards_field()
     for i in list_moves:
-        b = Boards_field.letters_board[int(i[0]) - 1] + i[-1]
+        b = str(board_field.letters_board[int(i[-1])]) + str(board_field.numbers_board[int(i[0])])
         moves_list.append(b)
     return moves_list
 
@@ -40,7 +39,8 @@ def get_figure(figure):
 
 class Boards_field:
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
-    board = [str(i) + "." + str(j) for i in range(1, 9) for j in range(1, 9)]
+    numbers_board = ['8', '7', '6', '5', '4', '3', '2', '1']
+    board = [str(i) + "." + str(j) for i in range(0, 8) for j in range(0, 8)]
 
 class Figure(Boards_field):
 
