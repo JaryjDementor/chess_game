@@ -206,6 +206,7 @@ class King(Figure):
 
     def list_available_moves(self, color, desk):
 
+        numeric_field = letter_to_number1(self.field)
         list_moves = []
         color_figure = 'b'
         list_cor = [
@@ -218,46 +219,45 @@ class King(Figure):
             [1, 0],
             [0, 1],
         ]
-        if self.field in self.board:
+        if numeric_field in self.board:
             if color == 'black':
                 color_figure = 'w'
 
             for i in list_cor:
-                x = int(self.field[0]) + i[0]
-                y = int(self.field[-1]) + i[1]
+                x = int(numeric_field[0]) + i[0]
+                y = int(numeric_field[-1]) + i[1]
                 cor_xy = str(x) + "." + str(y)
-                if x != 0 and y != 0 and cor_xy in self.board:
-                    field = number_to_letter([cor_xy])[0]
-
-                    if not desk.at[int(field[-1]), field[0]]:
+                if cor_xy in self.board:
+                    field = desk[x][y]
+                    try:
+                        float(field)
                         list_moves.append(cor_xy)
-                    else:
-                        if desk.at[int(field[-1]), field[0]][0] == color_figure:
+                    except ValueError:
+                        if field[0] == color_figure:
                             list_moves.append(cor_xy)
 
         return list_moves
 
-    def validate_move(self, dest_field, color, desk): # król musi sprawdzić czy nie zagrożone pole
-        if not dest_field in self.list_available_moves(color, desk):
+    def validate_move(self, dest_field, color, desk): # król musi sprawdzić czy nie zagrożone jest pole na ktore pojdzie
+        numeric_dest_field = letter_to_number1(dest_field)
+        if numeric_dest_field not in self.list_available_moves(color, desk):
             return []
 
         color_figure = 'b'
         if color == 'black':
             color_figure = 'w'
 
-        count_index = 9
-        count_column = 0
-        for row in desk.values:
-            count_index -= 1
-            for value in row:
+        count_row = -1
+        count_column = -1
+        for row in desk:
+            count_row += 1
+            for col in row:
                 count_column += 1
-                try:
-                    if value[0] == color_figure:
-                        field = str(count_column) + '.' + str(count_index)
-                        class_figure = get_figure(value)(field)
-                        if dest_field in class_figure.list_available_moves(color, desk):
-                            return []
-                except IndexError:
-                    pass
-            count_column = 0
-        return dest_field
+                if col[0] == color_figure:
+                    field = number_to_letter([str(count_row) + '.' + str(count_column)])[0]
+
+                    class_figure = get_figure(col)(field)
+                    if numeric_dest_field in class_figure.list_available_moves(color, desk):
+                        return []
+            count_column = -1
+        return numeric_dest_field
