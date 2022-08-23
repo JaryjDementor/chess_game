@@ -52,7 +52,8 @@ class Figure(Boards_field):
         pass
 
     def validate_move(self, dest_field, color, desk):  # informującą, czy możliwy jest ruch na wskazane pole.
-        if dest_field in self.list_available_moves(color, desk):
+        numeric_dest_field = letter_to_number1(dest_field)
+        if numeric_dest_field in self.list_available_moves(color, desk):
             return dest_field
         else:
             return []
@@ -70,6 +71,7 @@ class Pawn(Figure):
         if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
+                cor_x = 1
         try:
             if float(desk[int(numeric_field[0]) + cor_x][int(numeric_field[-1])]):
                 list_moves.append(str(int(numeric_field[0]) + cor_x) + '.' + numeric_field[-1])
