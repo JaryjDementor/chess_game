@@ -1,4 +1,9 @@
 
+class Boards_field:
+    letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
+    numbers_board = ['8', '7', '6', '5', '4', '3', '2', '1']
+    board = [str(i) + "." + str(j) for i in range(0, 8) for j in range(0, 8)]
+
 def get_field(field):
     board_field = Boards_field()
 
@@ -37,10 +42,7 @@ def get_figure(figure):
         raise ValueError('Not exist figure')
 
 
-class Boards_field:
-    letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
-    numbers_board = ['8', '7', '6', '5', '4', '3', '2', '1']
-    board = [str(i) + "." + str(j) for i in range(0, 8) for j in range(0, 8)]
+
 
 class Figure(Boards_field):
 
@@ -73,7 +75,8 @@ class Pawn(Figure):
                 color_figure = 'w'
                 cor_x = 1
         try:
-            if float(desk[int(numeric_field[0]) + cor_x][int(numeric_field[-1])]):
+            step = desk[int(numeric_field[0]) + cor_x][int(numeric_field[-1])][0]
+            if step != 'w' or step != 'b':
                 list_moves.append(str(int(numeric_field[0]) + cor_x) + '.' + numeric_field[-1])
         except ValueError:
             pass
