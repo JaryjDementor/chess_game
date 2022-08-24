@@ -41,15 +41,17 @@ class Game():
                                     if i[1] == numeric_field:
                                         numeric_step = letter_to_number1(step)
                                         i[1] = numeric_step
-                                        queue = 'player2'
-                                        color = 'black'
+                                queue = 'player2'
+                                color = 'black'
                             elif queue == 'player2':
                                 for i in cordinates_figures_player2:
                                     if i[1] == numeric_field:
+                                        print(i)
                                         numeric_step = letter_to_number1(step)
                                         i[1] = numeric_step
-                                        queue = 'player1'
-                                        color = 'white'
+                                        print(i)
+                                queue = 'player1'
+                                color = 'white'
                             start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
                             for i in start_game:
                                 print(i)
