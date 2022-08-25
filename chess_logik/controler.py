@@ -1,5 +1,5 @@
 from models import Player1, Player2, Move
-from figures import get_figure, get_field, number_to_letter, letter_to_number1
+from figures import get_figure, get_field, letter_to_number1
 
 
 class Game():
@@ -34,27 +34,36 @@ class Game():
                         class_figure = get_figure(figure)(field)
                         dest_field = class_figure.validate_move(step, color, start_game)
                         if dest_field:
-                            # opponents_figure = start_game[int(dest_field[0])][int(dest_field[-1])][0]
                             if queue == 'player1':
                                 for i in cordinates_figures_player1:
-
                                     if i[1] == numeric_field:
                                         numeric_step = letter_to_number1(step)
                                         i[1] = numeric_step
+                                        opponents_figure = start_game[int(numeric_step[0])][int(numeric_step[-1])]
+                                        if [opponents_figure, numeric_step] in cordinates_figures_player2:
+                                            cordinates_figures_player2.remove([opponents_figure, numeric_step])
+                                            player1.taken_figure.append(opponents_figure)
+
                                 queue = 'player2'
                                 color = 'black'
+
                             elif queue == 'player2':
                                 for i in cordinates_figures_player2:
                                     if i[1] == numeric_field:
-                                        print(i)
                                         numeric_step = letter_to_number1(step)
                                         i[1] = numeric_step
-                                        print(i)
+                                        opponents_figure = start_game[int(numeric_step[0])][int(numeric_step[-1])]
+                                        if [opponents_figure, numeric_step] in cordinates_figures_player1:
+                                            cordinates_figures_player1.remove([opponents_figure, numeric_step])
+                                            player2.taken_figure.append(opponents_figure)
                                 queue = 'player1'
                                 color = 'white'
                             start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
+                            print('oponents figure', player2.taken_figure)
                             for i in start_game:
                                 print(i)
+                            print('oponents figure', player1.taken_figure)
+                            opponents_figure = None
                 except ValueError:
                     print('Not exist field')
             except ValueError:
