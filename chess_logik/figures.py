@@ -78,24 +78,27 @@ class Pawn(Figure):
                 cor_left = str(int(numeric_field[0]) + 1) + '.' + str(int(numeric_field[-1]) - 1)
                 cor_right = str(int(numeric_field[0]) + 1) + '.' + str(int(numeric_field[-1]) + 1)
             if numeric_field[0] == '6' or numeric_field[0] == '1':
-                first_step = desk[int(numeric_field[0]) + first_step ][int(numeric_field[-1])]
-                if first_step in self.board:
-                    list_moves.append(first_step)
+                try:
+                    first_step = desk[int(numeric_field[0]) + first_step ][int(numeric_field[-1])]
+                    if first_step in self.board:
+                        list_moves.append(first_step)
+                except IndexError:
+                    pass
 
             step=desk[int(numeric_field[0]) + cor_x][int(numeric_field[-1])][0]
             if step != 'w' or step != 'b':
                 list_moves.append(str(int(numeric_field[0]) + cor_x) + '.' + numeric_field[-1])
-
-            a = desk[int(cor_left[0])][int(cor_left[-1])]
-            if a[0] == color_figure:
-                if cor_left in self.board:
-                    list_moves.append(cor_left)
-            b  = desk[int(cor_right[0])][int(cor_right[-1])]
-            if b[0] == color_figure:
-                if cor_right in self.board:
-                    list_moves.append(cor_right)
-
-
+            try:
+                a = desk[int(cor_left[0])][int(cor_left[-1])]
+                if a[0] == color_figure:
+                    if cor_left in self.board:
+                        list_moves.append(cor_left)
+                b  = desk[int(cor_right[0])][int(cor_right[-1])]
+                if b[0] == color_figure:
+                    if cor_right in self.board:
+                        list_moves.append(cor_right)
+            except IndexError:
+                pass
         return list_moves
 
 
@@ -104,34 +107,42 @@ class Rook(Figure):
         numeric_field = letter_to_number1(self.field)
         list_moves = []
         color_figure = 'b'
-
-        if self.field in self.board:
+        cor = [-1, 1]
+        value_for_while = 0
+        if numeric_field in self.board:
             if color == 'black':
                 color_figure = 'w'
+            count = 1
+            for i in cor:
+                while value_for_while == 0:
+                    new_numeric_field = str(int(numeric_field[0]) + i) + '.' + numeric_field[-1]
+                    if new_numeric_field not in self.board:
+                        break
+                    try:
+                        float(desk[int(new_numeric_field[0])][int(new_numeric_field[-1])])
+                        list_moves.append(new_numeric_field)
+                        numeric_field = new_numeric_field
+                    except ValueError:
+                        if desk[int(new_numeric_field[0])][int(new_numeric_field[-1])][0] == color_figure:
+                            list_moves.append(new_numeric_field)
+                        break
+                numeric_field = letter_to_number1(self.field)
 
-        for i in self.board:
-            if i != numeric_field:
-                avalible_field = desk[int(i[0])][int(i[-1])]
-                if numeric_field[0] == i[0]:
-                    list_moves.append(i)
-                    try:
-                        float(avalible_field)
-                    except ValueError:
-                        if avalible_field[0] == color_figure:
-                            list_moves.append(i)
+            for i in cor:
+                while value_for_while == 0:
+                    new_numeric_field = numeric_field[0] + '.' + str(int(numeric_field[-1]) + i)
+                    if new_numeric_field not in self.board:
                         break
-        for i in self.board:
-            if i != numeric_field:
-                avalible_field = desk[int(i[0])][int(i[-1])]
-                if numeric_field[-1] == i[-1]:
-                    list_moves.append(i)
                     try:
-                        float(avalible_field)
+                        float(desk[int(new_numeric_field[0])][int(new_numeric_field[-1])])
+                        list_moves.append(new_numeric_field)
+                        numeric_field = new_numeric_field
                     except ValueError:
-                        if avalible_field[0] == color_figure:
-                            list_moves.append(i)
+                        if desk[int(new_numeric_field[0])][int(new_numeric_field[-1])][0] == color_figure:
+                            list_moves.append(new_numeric_field)
                         break
-        return set(list_moves)
+                numeric_field = letter_to_number1(self.field)
+        return list_moves
 
 
 class Bishop(Figure):
