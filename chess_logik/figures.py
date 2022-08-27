@@ -78,24 +78,27 @@ class Pawn(Figure):
                 cor_left = str(int(numeric_field[0]) + 1) + '.' + str(int(numeric_field[-1]) - 1)
                 cor_right = str(int(numeric_field[0]) + 1) + '.' + str(int(numeric_field[-1]) + 1)
             if numeric_field[0] == '6' or numeric_field[0] == '1':
-                first_step = desk[int(numeric_field[0]) + first_step ][int(numeric_field[-1])]
-                if first_step in self.board:
-                    list_moves.append(first_step)
+                try:
+                    first_step = desk[int(numeric_field[0]) + first_step ][int(numeric_field[-1])]
+                    if first_step in self.board:
+                        list_moves.append(first_step)
+                except IndexError:
+                    pass
 
             step=desk[int(numeric_field[0]) + cor_x][int(numeric_field[-1])][0]
             if step != 'w' or step != 'b':
                 list_moves.append(str(int(numeric_field[0]) + cor_x) + '.' + numeric_field[-1])
-
-            a = desk[int(cor_left[0])][int(cor_left[-1])]
-            if a[0] == color_figure:
-                if cor_left in self.board:
-                    list_moves.append(cor_left)
-            b  = desk[int(cor_right[0])][int(cor_right[-1])]
-            if b[0] == color_figure:
-                if cor_right in self.board:
-                    list_moves.append(cor_right)
-
-
+            try:
+                a = desk[int(cor_left[0])][int(cor_left[-1])]
+                if a[0] == color_figure:
+                    if cor_left in self.board:
+                        list_moves.append(cor_left)
+                b  = desk[int(cor_right[0])][int(cor_right[-1])]
+                if b[0] == color_figure:
+                    if cor_right in self.board:
+                        list_moves.append(cor_right)
+            except IndexError:
+                pass
         return list_moves
 
 
