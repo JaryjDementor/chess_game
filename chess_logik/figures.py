@@ -64,31 +64,30 @@ class Figure(Boards_field):
 class Pawn(Figure):
     def list_available_moves(self, color, desk):
         list_moves = []
-        numeric_field = letter_to_number1(self.field)
-        cor_left = str(int(numeric_field[0]) - 1) + '.' + str(int(numeric_field[-1]) - 1)
-        cor_right = str(int(numeric_field[0]) - 1) + '.' + str(int(numeric_field[-1]) + 1)
+        cor_left = str(int(self.field[0]) - 1) + '.' + str(int(self.field[-1]) - 1)
+        cor_right = str(int(self.field[0]) - 1) + '.' + str(int(self.field[-1]) + 1)
         cor_x = -1
         color_figure = 'b'
         first_step = -2
-        if numeric_field in self.board:
+        if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
                 cor_x = 1
                 first_step = 2
-                cor_left = str(int(numeric_field[0]) + 1) + '.' + str(int(numeric_field[-1]) - 1)
-                cor_right = str(int(numeric_field[0]) + 1) + '.' + str(int(numeric_field[-1]) + 1)
-            if numeric_field[0] == '6' or numeric_field[0] == '1':
+                cor_left = str(int(self.field[0]) + 1) + '.' + str(int(self.field[-1]) - 1)
+                cor_right = str(int(self.field[0]) + 1) + '.' + str(int(self.field[-1]) + 1)
+            if self.field[0] == '6' or self.field[0] == '1':
                 try:
-                    first_step = desk[int(numeric_field[0]) + first_step ][int(numeric_field[-1])]
+                    first_step = desk[int(self.field[0]) + first_step ][int(self.field[-1])]
                     if first_step in self.board:
                         list_moves.append(first_step)
                 except IndexError:
                     pass
-
-            step=desk[int(numeric_field[0]) + cor_x][int(numeric_field[-1])][0]
-            if step != 'w' or step != 'b':
-                list_moves.append(str(int(numeric_field[0]) + cor_x) + '.' + numeric_field[-1])
             try:
+                step=desk[int(self.field[0]) + cor_x][int(self.field[-1])][0]
+                if step != 'w' or step != 'b':
+                    list_moves.append(str(int(self.field[0]) + cor_x) + '.' + self.field[-1])
+
                 a = desk[int(cor_left[0])][int(cor_left[-1])]
                 if a[0] == color_figure:
                     if cor_left in self.board:
@@ -104,12 +103,12 @@ class Pawn(Figure):
 
 class Rook(Figure):
     def list_available_moves(self, color, desk):
-        numeric_field = letter_to_number1(self.field)
+        numeric_field = self.field
         list_moves = []
         color_figure = 'b'
         cor = [-1, 1]
         value_for_while = 0
-        if numeric_field in self.board:
+        if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
             count = 1
@@ -126,7 +125,7 @@ class Rook(Figure):
                         if desk[int(new_numeric_field[0])][int(new_numeric_field[-1])][0] == color_figure:
                             list_moves.append(new_numeric_field)
                         break
-                numeric_field = letter_to_number1(self.field)
+                numeric_field = self.field
 
             for i in cor:
                 while value_for_while == 0:
@@ -141,14 +140,14 @@ class Rook(Figure):
                         if desk[int(new_numeric_field[0])][int(new_numeric_field[-1])][0] == color_figure:
                             list_moves.append(new_numeric_field)
                         break
-                numeric_field = letter_to_number1(self.field)
+                numeric_field = self.field
         return list_moves
 
 
 class Bishop(Figure):
     def list_available_moves(self, color, desk):
         list_moves = []
-        numeric_field = letter_to_number1(self.field)
+        numeric_field = self.field
         color_figure = 'b'
         field = ''
         cor_move_bishop = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
@@ -165,7 +164,7 @@ class Bishop(Figure):
                 new_numeric_field = str(x + i[0]) + "." + str(y + i[-1])
 
                 if not new_numeric_field in self.board:
-                    numeric_field = letter_to_number1(self.field)
+                    numeric_field = self.field
                     break
                 try:
                     field = desk[int(new_numeric_field[0])][int(new_numeric_field[-1])]
@@ -176,14 +175,13 @@ class Bishop(Figure):
                 except ValueError:
                     if field[0] == color_figure:
                         list_moves.append(new_numeric_field)
-                    numeric_field = letter_to_number1(self.field)
+                    numeric_field = self.field
                     break
 
         return list_moves
 
 class Knight(Figure):
     def list_available_moves(self, color, desk):
-        numeric_field = letter_to_number1(self.field)
         list_moves = []
         color_figure = 'b'
         list_cor = [
@@ -196,13 +194,13 @@ class Knight(Figure):
             [2, 1],
             [1, 2],
         ]
-        if numeric_field in self.board:
+        if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
 
             for i in list_cor:
-                x = int(numeric_field[0]) + i[0]
-                y = int(numeric_field[-1]) + i[-1]
+                x = int(self.field[0]) + i[0]
+                y = int(self.field[-1]) + i[-1]
                 cor_xy = str(x) + "." + str(y)
                 if cor_xy in self.board:
                     field = desk[x][y]
