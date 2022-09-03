@@ -31,7 +31,8 @@ class Game():
                     numeric_field = get_field(field)
                     if start_game[int(numeric_field[0])][int(numeric_field[-1])] == figure:
                         step = input('step - ')
-                        class_figure = get_figure(figure)(field)
+
+                        class_figure = get_figure(figure)(numeric_field)
                         dest_field = class_figure.validate_move(step, color, start_game)
                         if dest_field:
                             if queue == 'player1':
