@@ -1,4 +1,4 @@
-
+import copy
 class Boards_field:
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
     numbers_board = ['8', '7', '6', '5', '4', '3', '2', '1']
@@ -229,7 +229,6 @@ class King(Figure):
 
     def list_available_moves(self, color, desk):
 
-        numeric_field = letter_to_number1(self.field)
         list_moves = []
         color_figure = 'b'
         list_cor = [
@@ -242,13 +241,13 @@ class King(Figure):
             [1, 0],
             [0, 1],
         ]
-        if numeric_field in self.board:
+        if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
 
             for i in list_cor:
-                x = int(numeric_field[0]) + i[0]
-                y = int(numeric_field[-1]) + i[1]
+                x = int(self.field[0]) + i[0]
+                y = int(self.field[-1]) + i[1]
                 cor_xy = str(x) + "." + str(y)
                 if cor_xy in self.board:
                     field = desk[x][y]
@@ -261,26 +260,89 @@ class King(Figure):
 
         return list_moves
 
-    def validate_move(self, dest_field, color, desk): # król musi sprawdzić czy nie zagrożone jest pole na ktore pojdzie
+    def validate_move(self, dest_field, color,
+                      desk):  # król musi sprawdzić czy nie zagrożone jest pole na ktore pojdzie
         numeric_dest_field = letter_to_number1(dest_field)
         if numeric_dest_field not in self.list_available_moves(color, desk):
             return []
-
-        color_figure = 'b'
+        kings_cor = ['w_k', numeric_dest_field]
         if color == 'black':
+            kings_cor[0] = 'b_k'
+
+        if not self.checkmate_check(kings_cor, desk):
+            return numeric_dest_field
+
+    def checkmate_check(self, kings_cor, desk):
+        color = 'black'
+        color_figure = 'b'
+        if kings_cor[0][0] == 'b':
             color_figure = 'w'
+            color = 'white'
 
-        count_row = -1
-        count_column = -1
-        for row in desk:
-            count_row += 1
-            for col in row:
-                count_column += 1
-                if col[0] == color_figure:
-                    field = number_to_letter([str(count_row) + '.' + str(count_column)])[0]
+        for i in desk:
+            for j in i:
+                if j[0] == color_figure:
+                    field = str(desk.index(i)) + '.' + str(i.index(j))
+                    class_figure = get_figure(j)(field)
+                    list_move = class_figure.list_available_moves(color, desk)
+                    if kings_cor[-1] in list_move:
+                        return 'check'
 
-                    class_figure = get_figure(col)(field)
-                    if numeric_dest_field in class_figure.list_available_moves(color, desk):
-                        return []
-            count_column = -1
-        return numeric_dest_field
+
+class Watcher:
+
+    def avoiding_checkmate(self, kings_cor, desk, field):
+
+        color_figure = 'w'
+        color = 'white'
+
+        list_move = [field]
+        cor = [1, 1]
+        list_avoiding_checkmate = []
+
+        if kings_cor[0][0] == 'b':
+            color_figure = 'b'
+            color = 'black'
+
+        x = abs(int(kings_cor[-1][0]) - int(field[0]))
+        y = abs(int(kings_cor[-1][-1]) - int(field[-1]))
+        check_knight = str(x) + '.' + str(y)
+        if check_knight != '1.2' and check_knight != '2.1':
+            if field[0] > kings_cor[-1][0]:
+                cor[0] = -1
+            if field[-1] > kings_cor[-1][-1]:
+                cor[-1] = -1
+            if field[0] == kings_cor[-1][0] and field[-1] != kings_cor[-1][-1]:
+                cor[0] = 0
+            elif field[0] != kings_cor[-1][0] and field[-1] == kings_cor[-1][-1]:
+                cor[-1] = 0
+
+            value_for_while = field
+            while float(value_for_while) != float(kings_cor[-1]):
+
+                new_field = str(int(value_for_while[0]) + cor[0]) + '.' + str(int(value_for_while[-1]) + cor[-1])
+                if new_field != kings_cor[-1]:
+                    list_move.append(new_field)
+                value_for_while = new_field
+        King = get_figure(kings_cor[0])(kings_cor[-1])
+        list_move_king = King.list_available_moves(color, desk)
+        for i in list_move_king:
+            list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
+
+        for i in desk:
+            for j in i:
+                if j[0] == color_figure and j[-1] != 'k':
+                    desk_checmate_check = copy.deepcopy(desk)
+                    field_figure = str(desk_checmate_check.index(i)) + '.' + str(i.index(j))
+                    class_figure = get_figure(j)(field_figure)
+                    list_move_figure = class_figure.list_available_moves(color, desk_checmate_check)
+                    for k in list_move_figure:
+                        if k in list_move:
+
+                            desk_checmate_check[int(field_figure[0])][int(field_figure[-1])] = str(desk_checmate_check.index(i)) + '.' + str(i.index(j))
+                            desk_checmate_check[int(k[0])][int(k[-1])] = j
+                            checmate_check = King.checkmate_check(kings_cor, desk_checmate_check)
+                            if not checmate_check:
+                                list_avoiding_checkmate.append([j, field_figure, k])
+
+        return list_avoiding_checkmate
