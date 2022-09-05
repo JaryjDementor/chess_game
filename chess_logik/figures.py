@@ -302,6 +302,7 @@ class Watcher:
         if kings_cor[0][0] == 'b':
             color_figure = 'b'
             color = 'black'
+        # Sprawdzam jaka figura zagraza i jakie pola mogą zapobiec zagrozeniu Króla. Pola zapisuje do listy 'list_move'.
 
         x = abs(int(kings_cor[-1][0]) - int(field[0]))
         y = abs(int(kings_cor[-1][-1]) - int(field[-1]))
@@ -323,11 +324,14 @@ class Watcher:
                 if new_field != kings_cor[-1]:
                     list_move.append(new_field)
                 value_for_while = new_field
+        # Sprawdzam na jakie pole moze uciec Król. Zapisuje od razu do listy 'list_avoiding_checkmate'.
         King = get_figure(kings_cor[0])(kings_cor[-1])
         list_move_king = King.list_available_moves(color, desk)
         for i in list_move_king:
             list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
 
+        # Mając pola ktore mogą zapobiec zagrozeniu, sprwdzam każdą figure, jakie wszystkie mozliwe ruchy  moze wykonac. Jak w liscie ruchów figury jest pole z listy
+        # list_move to zapisuje tą figure do listy 'list_avoiding_checkmate'
         for i in desk:
             for j in i:
                 if j[0] == color_figure and j[-1] != 'k':
