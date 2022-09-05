@@ -54,8 +54,7 @@ class Figure(Boards_field):
         pass
 
     def validate_move(self, dest_field, color, desk):  # informującą, czy możliwy jest ruch na wskazane pole.
-        numeric_dest_field = letter_to_number1(dest_field)
-        if numeric_dest_field in self.list_available_moves(color, desk):
+        if dest_field in self.list_available_moves(color, desk):
             return dest_field
         else:
             return []
