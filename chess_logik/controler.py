@@ -81,8 +81,13 @@ class Game():
                             watcher = Watcher()
                             dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, start_game)
                             for i in dict_avalible_move_oponents.values():
+
                                 if kings_field in i:
+                                    print('ugroza korolu', i)
                                     list_avoiding_checkmate = watcher.avoiding_checkmate([king, kings_field], start_game, numeric_step)
+                                    print('vozmoznye vychody s mata', list_avoiding_checkmate)
+                                    if list_avoiding_checkmate == []:
+                                        value_for_while = 1
                                 else:
                                     list_avoiding_checkmate = []
 
@@ -93,6 +98,8 @@ class Game():
                     print('Not exist field')
             except ValueError:
                 print('Not exist figure')
+
+        return print('Winner {}'.format(queue))
 
 
 

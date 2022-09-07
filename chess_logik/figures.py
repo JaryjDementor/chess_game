@@ -289,11 +289,9 @@ class Watcher:
                     list_moves = class_figure.list_available_moves(color_for_figure, desk)
                     if list_moves:
                         dict_avalible_moves[(j, field)] = list_moves
-                count+=1
-            count =0
+                count += 1
+            count = 0
         return dict_avalible_moves
-
-
 
     def avoiding_checkmate(self, kings_cor, desk, field):
 
@@ -339,9 +337,18 @@ class Watcher:
                 list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
 
         dict_avalible_move_oponents = self.dict_avalible_move_oponents(color_oponents, desk)
+
         for i in list_move:
-            for j,k in dict_avalible_move_oponents.items():
+            for j, k in dict_avalible_move_oponents.items():
                 if i in k:
                     list_avoiding_checkmate.append([j[0], j[-1], i])
+        desk_checmate_check = copy.deepcopy(desk)
+        for i in list_avoiding_checkmate:
+            desk_checmate_check[int(i[1][0])][int(i[1][-1])] = i[1]
+            desk_checmate_check[int(i[-1][0])][int(i[-1][-1])] = i[0]
+            dict_avalible_move_oponents = self.dict_avalible_move_oponents(color_oponents, desk_checmate_check)
+            for j in dict_avalible_move_oponents.values():
+                if kings_cor[-1] in j:
+                    list_avoiding_checkmate.remove(i)
 
         return list_avoiding_checkmate
