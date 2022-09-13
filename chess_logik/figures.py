@@ -263,16 +263,23 @@ class King(Figure):
         list_moves = self.list_available_moves(color, desk)
         watcher = Watcher()
         dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, desk)
+        invalid_move = []
+
         for i in list_moves:
             for j in dict_avalible_move_oponents.values():
                 if i in j:
-                    list_moves.remove(i)
+                    invalid_move.append(i)
+                    break
+        for i in invalid_move:
+            list_moves.remove(i)
+
         if dest_field in list_moves:
             return dest_field
 
 
 class Watcher:
     def dict_avalible_move_oponents(self, color, desk):
+        # potrzebuje zmiany coloru dla funkcji King.validat_move
         dict_avalible_moves = {}
         color_figures = 'b'
         color_for_figure = 'black'
@@ -295,7 +302,6 @@ class Watcher:
 
     def avoiding_checkmate(self, kings_cor, desk, field):
 
-        color_figure = 'w'
         color = 'white'
         color_oponents = 'black'
         list_move = [field]
@@ -303,7 +309,6 @@ class Watcher:
         list_avoiding_checkmate = []
 
         if kings_cor[0][0] == 'b':
-            color_figure = 'b'
             color = 'black'
             color_oponents = 'white'
 
@@ -329,26 +334,47 @@ class Watcher:
                 value_for_while = new_field
         King = get_figure(kings_cor[0])(kings_cor[-1])
         list_move_king = King.list_available_moves(color, desk)
+        ivalid_move = []
         for i in list_move_king:
             dest_field = King.validate_move(i, color, desk)
             if not dest_field:
-                list_move_king.remove(i)
-            else:
-                list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
+                ivalid_move.append(i)
+        for i in ivalid_move:
+            list_move_king.remove(i)
 
-        dict_avalible_move_oponents = self.dict_avalible_move_oponents(color_oponents, desk)
+        for i in list_move_king:
+            list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
+
+        dict_avalible_move = self.dict_avalible_move_oponents(color_oponents, desk)
+        dict_avalible_move.pop(tuple(kings_cor))
 
         for i in list_move:
-            for j, k in dict_avalible_move_oponents.items():
+            for j, k in dict_avalible_move.items():
                 if i in k:
                     list_avoiding_checkmate.append([j[0], j[-1], i])
-        desk_checmate_check = copy.deepcopy(desk)
+
+        # musze sprawdzic czy po kroku figury, z listy list_avoiding_checkmate,
+        # nie bedzie znowu zagrozenia
+
+        ivalid_move = []
         for i in list_avoiding_checkmate:
+            desk_checmate_check = copy.deepcopy(desk)
             desk_checmate_check[int(i[1][0])][int(i[1][-1])] = i[1]
             desk_checmate_check[int(i[-1][0])][int(i[-1][-1])] = i[0]
-            dict_avalible_move_oponents = self.dict_avalible_move_oponents(color_oponents, desk_checmate_check)
-            for j in dict_avalible_move_oponents.values():
-                if kings_cor[-1] in j:
-                    list_avoiding_checkmate.remove(i)
+            kings_field = None
 
+            # wyciagam nowe/stare kordynaty king
+            for j in desk_checmate_check:
+                for k in j:
+                    if k == kings_cor[0]:
+                        kings_field = str(desk_checmate_check.index(j)) + '.' + str(j.index(k))
+
+            dict_avalible_move_oponents = self.dict_avalible_move_oponents(color, desk_checmate_check)
+
+            for j in dict_avalible_move_oponents.values():
+                if kings_field in j:
+                    ivalid_move.append(i)
+                    break
+        for i in ivalid_move:
+            list_avoiding_checkmate.remove(i)
         return list_avoiding_checkmate
