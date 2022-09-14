@@ -1,4 +1,27 @@
 import copy
+
+def change_pawn_with_any_figure(color, desk, taken_figures):
+    pawn = 'w_p'
+    index_desk = 0
+    if color == 'black':
+        pawn = 'b_p'
+        index_desk = 7
+    choice_player = None
+    field = None
+    count = 0
+    if taken_figures:
+        for i in desk[index_desk]:
+            if i == pawn:
+                print(taken_figures)
+                while choice_player not in taken_figures:
+                    choice_player = input('Please choose a figure: ')
+                field = str(index_desk) + '.' + str(count)
+
+                desk[index_desk][count] = choice_player
+                taken_figures.remove(choice_player)
+                break
+            count += 1
+
 class Boards_field:
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
     numbers_board = ['8', '7', '6', '5', '4', '3', '2', '1']
@@ -48,7 +71,6 @@ class Figure(Boards_field):
 
     def __init__(self, field):
         self.field = field
-        # self.figura = figure
 
     def list_available_moves(self, color, desk):  # list_available_moves(),
         pass
@@ -68,6 +90,7 @@ class Pawn(Figure):
         cor_x = -1
         color_figure = 'b'
         first_step = -2
+
         if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'

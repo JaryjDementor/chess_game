@@ -32,6 +32,8 @@ class Board:
         return board
 
 
+
+
 class User(Color_figure):
     def __int__(self, name):
         self.name = name
