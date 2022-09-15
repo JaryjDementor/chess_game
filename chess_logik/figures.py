@@ -1,5 +1,26 @@
 import copy
 
+def move_player(desk):
+    figure = input('figure - ')
+    try:
+        get_figure(figure)
+        field = input('start - ')
+        try:
+            get_field(field)
+            numeric_field = get_field(field)
+            if desk[int(numeric_field[0])][int(numeric_field[-1])] == figure:
+                step = input('step - ')
+                numeric_step = letter_to_number1(step)
+                return [figure, numeric_field, numeric_step]
+        except ValueError:
+            print('Not exist field')
+        except IndexError:
+            print('Not exist field')
+    except ValueError:
+        print('Not exist figure')
+
+
+
 def change_pawn_with_any_figure(color, desk, taken_figures, cor_figurs):
     pawn = 'w_p'
     index_desk = 0
