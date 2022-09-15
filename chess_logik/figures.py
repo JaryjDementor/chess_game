@@ -1,6 +1,6 @@
 import copy
 
-def change_pawn_with_any_figure(color, desk, taken_figures):
+def change_pawn_with_any_figure(color, desk, taken_figures, cor_figurs):
     pawn = 'w_p'
     index_desk = 0
     if color == 'black':
@@ -16,8 +16,10 @@ def change_pawn_with_any_figure(color, desk, taken_figures):
                 while choice_player not in taken_figures:
                     choice_player = input('Please choose a figure: ')
                 field = str(index_desk) + '.' + str(count)
+                for i in cor_figurs:
+                    if i[0] == pawn and i[-1] == field:
+                        i[0] = choice_player
 
-                desk[index_desk][count] = choice_player
                 taken_figures.remove(choice_player)
                 break
             count += 1
@@ -248,6 +250,7 @@ class Queen(Figure):
 
 
 class King(Figure):
+    count_move = 0
 
     def list_available_moves(self, color, desk):
         king = 'w_k'
@@ -263,10 +266,16 @@ class King(Figure):
             [1, 0],
             [0, 1],
         ]
+
         if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
                 king = 'b_k'
+            if self.count_move == 0:
+                castling_list = self.castling_king(color, desk)
+                if castling_list:
+                    for i in castling_list:
+                        list_moves.append(i)
 
             for i in list_cor:
                 x = int(self.field[0]) + i[0]
@@ -297,7 +306,37 @@ class King(Figure):
             list_moves.remove(i)
 
         if dest_field in list_moves:
+            self.count_move += 1
             return dest_field
+
+    def castling_king(self, color, desk):
+        king_cor = '7.4'
+        rook = 'w_r'
+        if color == 'black':
+            king_cor = '0.4'
+            rook = 'b_r'
+        avalible_castling = []
+        cor = [-1, 1]
+        value = 'long'
+        for i in cor:
+            cor_for_castling = king_cor
+            while cor_for_castling in self.board:
+                cor_for_castling = cor_for_castling[:2] + str(int(cor_for_castling[-1]) + i)
+                if cor_for_castling[-1] == '0' or cor_for_castling[-1] == '7':
+                    figure = desk[int(cor_for_castling[0])][int(cor_for_castling[-1])]
+                    if figure == rook:
+                        avalible_castling.append('{} castling'.format(value))
+                        break
+                try:
+                    float(desk[int(cor_for_castling[0])][int(cor_for_castling[-1])])
+                except ValueError:
+                    break
+
+
+
+            value = 'short'
+
+        return avalible_castling
 
 
 class Watcher:
