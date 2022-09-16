@@ -1,5 +1,24 @@
 import copy
 
+def make_castling(color, cor_figures, step):
+    short_castling = [['w_k', '7.4', '7.6'], ['w_r', '7.7', '7.5']]
+    long_castling = [['w_k', '7.4', '7.1'], ['w_r', '7.0', '7.2']]
+    if color == 'black':
+        short_castling = [['b_k', '0.4', '0.6'], ['b_r', '0.7', '0.5']]
+        long_castling = [['b_k', '0.4', '0.1'], ['b_r', '0.0', '0.2']]
+    if step == 'short castling':
+        for i in cor_figures:
+            if i[0] == short_castling[0][0]:
+                i[-1] = short_castling[0][-1]
+            elif i[0] == short_castling[-1][0] and i[-1] == short_castling[-1][1]:
+                i[-1] = short_castling[-1][-1]
+    else:
+        for i in cor_figures:
+            if i[0] == long_castling[0][0]:
+                i[-1] = long_castling[0][-1]
+            elif i[0] == long_castling[-1][0] and i[-1] == long_castling[-1][1]:
+                i[-1] = long_castling[-1][-1]
+
 def move_player(desk):
     figure = input('figure - ')
     try:
@@ -21,29 +40,21 @@ def move_player(desk):
 
 
 
-def change_pawn_with_any_figure(color, desk, taken_figures, cor_figurs):
+def change_pawn_with_any_figure(color, taken_figures, cor_figurs):
     pawn = 'w_p'
     index_desk = 0
     if color == 'black':
         pawn = 'b_p'
         index_desk = 7
     choice_player = None
-    field = None
-    count = 0
-    if taken_figures:
-        for i in desk[index_desk]:
-            if i == pawn:
-                print(taken_figures)
-                while choice_player not in taken_figures:
-                    choice_player = input('Please choose a figure: ')
-                field = str(index_desk) + '.' + str(count)
-                for i in cor_figurs:
-                    if i[0] == pawn and i[-1] == field:
-                        i[0] = choice_player
-
-                taken_figures.remove(choice_player)
-                break
-            count += 1
+    for i in cor_figurs:
+        if i[0] == pawn and i[-1][0] == index_desk:
+            print(taken_figures)
+            while choice_player not in taken_figures:
+                choice_player = input('Please choose a figure: ')
+            i[0] = choice_player
+            taken_figures.remove(choice_player)
+            break
 
 class Boards_field:
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]

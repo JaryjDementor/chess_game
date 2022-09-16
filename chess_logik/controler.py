@@ -1,5 +1,5 @@
 from models import Player1, Player2, Move
-from figures import get_figure, get_field, letter_to_number1, King, Watcher
+from figures import get_figure, get_field, letter_to_number1, Watcher, move_player, change_pawn_with_any_figure, make_castling
 
 
 class Game():
@@ -23,84 +23,146 @@ class Game():
         opponents_figure = None
         list_avoiding_checkmate = []
         while value_for_while == 0:
+            move = move_player(start_game)
+            if move and not list_avoiding_checkmate or move in list_avoiding_checkmate:
+                class_figure = get_figure(move[0])(move[1])
+                dest_field = class_figure.validate_move(move[-1], color, start_game)
+                if dest_field and queue == 'player1':
+                    if dest_field.isalpha():
+                        make_castling(color, cordinates_figures_player1, dest_field)
+                    else:
+                        for i in cordinates_figures_player1:
+                            if i[1] == move[1]:
+                                i[1] = dest_field
+                                opponents_figure = start_game[int(dest_field[0])][int(dest_field[-1])]
+                                if [opponents_figure, dest_field] in cordinates_figures_player2:
+                                    cordinates_figures_player2.remove([opponents_figure, dest_field])
+                                    player1.taken_figure.append(opponents_figure)
+                        change_pawn_with_any_figure(color, player2.taken_figure, cordinates_figures_player1)
+                    queue = 'player2'
+                    color = 'black'
+                    king = 'b_k'
+                elif dest_field and queue == 'player2':
+                    if dest_field.isalpha():
+                        make_castling(color, cordinates_figures_player2, dest_field)
+                    else:
+                        for i in cordinates_figures_player2:
+                            if i[1] == move[1]:
+                                i[1] = dest_field
+                                opponents_figure = start_game[int(dest_field[0])][int(dest_field[-1])]
+                                if [opponents_figure, dest_field] in cordinates_figures_player2:
+                                    cordinates_figures_player1.remove([opponents_figure, dest_field])
+                                    player2.taken_figure.append(opponents_figure)
+                        change_pawn_with_any_figure(color, player1.taken_figure, cordinates_figures_player2)
+                    queue = 'player1'
+                    color = 'white'
+                    king = 'w_k'
+            start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
+            print(queue)
+            print('oponents figure', player2.taken_figure)
+            kings_field = ''
+            count = 0
+            for i in start_game:
+                print(i)
+                for j in i:
+                    if j == king:
+                         kings_field = str(start_game.index(i)) + '.' + str(count)
+                    count+=1
+                count = 0
+            print('oponents figure', player1.taken_figure)
+            opponents_figure = None
+            watcher = Watcher()
+            dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, start_game)
+            for i in dict_avalible_move_oponents.values():
 
-            figure = input('figure - ')
-
-            try:
-                get_figure(figure)
-                field = input('start - ')
-                try:
-                    get_field(field)
-                    numeric_field = get_field(field)
-                    if start_game[int(numeric_field[0])][int(numeric_field[-1])] == figure:
-                        step = input('step - ')
-                        numeric_step = letter_to_number1(step)
-                        print('du', list_avoiding_checkmate)
-                        if not list_avoiding_checkmate or [figure, numeric_field,numeric_step] in list_avoiding_checkmate:
-                            class_figure = get_figure(figure)(numeric_field)
-                            dest_field = class_figure.validate_move(numeric_step, color, start_game)
-                            if dest_field:
-                                if queue == 'player1':
-                                    for i in cordinates_figures_player1:
-                                        if i[1] == numeric_field:
-                                            i[1] = numeric_step
-                                            opponents_figure = start_game[int(numeric_step[0])][int(numeric_step[-1])]
-                                            if [opponents_figure, numeric_step] in cordinates_figures_player2:
-                                                cordinates_figures_player2.remove([opponents_figure, numeric_step])
-                                                player1.taken_figure.append(opponents_figure)
-
-
-                                    queue = 'player2'
-                                    color = 'black'
-                                    king = 'b_k'
-                                elif queue == 'player2':
-                                    for i in cordinates_figures_player2:
-                                        if i[1] == numeric_field:
-                                            numeric_step = letter_to_number1(step)
-                                            i[1] = numeric_step
-                                            opponents_figure = start_game[int(numeric_step[0])][int(numeric_step[-1])]
-                                            if [opponents_figure, numeric_step] in cordinates_figures_player1:
-                                                cordinates_figures_player1.remove([opponents_figure, numeric_step])
-                                                player2.taken_figure.append(opponents_figure)
-                                    queue = 'player1'
-                                    color = 'white'
-                                    king = 'w_k'
-                            start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
-                            print(queue)
-                            print('oponents figure', player2.taken_figure)
-                            kings_field = ''
-                            count = 0
-                            for i in start_game:
-                                print(i)
-                                for j in i:
-                                    if j == king:
-                                        kings_field = str(start_game.index(i)) + '.' + str(count)
-                                    count+=1
-                                count = 0
-                            print('oponents figure', player1.taken_figure)
-                            opponents_figure = None
-                            watcher = Watcher()
-                            dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, start_game)
-                            for i in dict_avalible_move_oponents.values():
-
-                                if kings_field in i:
-                                    print('ugroza korolu', i)
-                                    list_avoiding_checkmate = watcher.avoiding_checkmate([king, kings_field], start_game, numeric_step)
-                                    print('vozmoznye vychody s mata', list_avoiding_checkmate)
-                                    if list_avoiding_checkmate == []:
-                                        value_for_while = 1
-                                else:
-                                    list_avoiding_checkmate = []
-
-
-                except ValueError:
-                    print('Not exist field')
-                except IndexError:
-                    print('Not exist field')
-            except ValueError:
-                print('Not exist figure')
-
+                if kings_field in i:
+                    print('ugroza korolu', i)
+                    list_avoiding_checkmate = watcher.avoiding_checkmate([king, kings_field], start_game, numeric_step)
+                    print('vozmoznye vychody s mata', list_avoiding_checkmate)
+                    if list_avoiding_checkmate == []:
+                        value_for_while = 1
+                    else:
+                        list_avoiding_checkmate = []
         return print('Winner {}'.format(queue))
+
+
+        #     figure = input('figure - ')
+        #
+        #     try:
+        #         get_figure(figure)
+        #         field = input('start - ')
+        #         try:
+        #             get_field(field)
+        #             numeric_field = get_field(field)
+        #             if start_game[int(numeric_field[0])][int(numeric_field[-1])] == figure:
+        #                 step = input('step - ')
+        #                 numeric_step = letter_to_number1(step)
+        #                 print('du', list_avoiding_checkmate)
+        #                 if not list_avoiding_checkmate or [figure, numeric_field,numeric_step] in list_avoiding_checkmate:
+        #                     class_figure = get_figure(figure)(numeric_field)
+        #                     dest_field = class_figure.validate_move(numeric_step, color, start_game)
+        #                     if dest_field:
+        #                         if queue == 'player1':
+        #                             for i in cordinates_figures_player1:
+        #                                 if i[1] == numeric_field:
+        #                                     i[1] = numeric_step
+        #                                     opponents_figure = start_game[int(numeric_step[0])][int(numeric_step[-1])]
+        #                                     if [opponents_figure, numeric_step] in cordinates_figures_player2:
+        #                                         cordinates_figures_player2.remove([opponents_figure, numeric_step])
+        #                                         player1.taken_figure.append(opponents_figure)
+        #
+        #
+        #                             queue = 'player2'
+        #                             color = 'black'
+        #                             king = 'b_k'
+        #                         elif queue == 'player2':
+        #                             for i in cordinates_figures_player2:
+        #                                 if i[1] == numeric_field:
+        #                                     numeric_step = letter_to_number1(step)
+        #                                     i[1] = numeric_step
+        #                                     opponents_figure = start_game[int(numeric_step[0])][int(numeric_step[-1])]
+        #                                     if [opponents_figure, numeric_step] in cordinates_figures_player1:
+        #                                         cordinates_figures_player1.remove([opponents_figure, numeric_step])
+        #                                         player2.taken_figure.append(opponents_figure)
+        #                             queue = 'player1'
+        #                             color = 'white'
+        #                             king = 'w_k'
+        #                     start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
+        #                     print(queue)
+        #                     print('oponents figure', player2.taken_figure)
+        #                     kings_field = ''
+        #                     count = 0
+        #                     for i in start_game:
+        #                         print(i)
+        #                         for j in i:
+        #                             if j == king:
+        #                                 kings_field = str(start_game.index(i)) + '.' + str(count)
+        #                             count+=1
+        #                         count = 0
+        #                     print('oponents figure', player1.taken_figure)
+        #                     opponents_figure = None
+        #                     watcher = Watcher()
+        #                     dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, start_game)
+        #                     for i in dict_avalible_move_oponents.values():
+        #
+        #                         if kings_field in i:
+        #                             print('ugroza korolu', i)
+        #                             list_avoiding_checkmate = watcher.avoiding_checkmate([king, kings_field], start_game, numeric_step)
+        #                             print('vozmoznye vychody s mata', list_avoiding_checkmate)
+        #                             if list_avoiding_checkmate == []:
+        #                                 value_for_while = 1
+        #                         else:
+        #                             list_avoiding_checkmate = []
+        #
+        #
+        #         except ValueError:
+        #             print('Not exist field')
+        #         except IndexError:
+        #             print('Not exist field')
+        #     except ValueError:
+        #         print('Not exist figure')
+        #
+        # return print('Winner {}'.format(queue))
 
 
 
