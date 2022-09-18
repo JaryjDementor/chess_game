@@ -29,6 +29,8 @@ def move_player(desk):
             numeric_field = get_field(field)
             if desk[int(numeric_field[0])][int(numeric_field[-1])] == figure:
                 step = input('step - ')
+                if step == 'short castling' or step == 'long castling':
+                    return [figure, numeric_field, step]
                 numeric_step = letter_to_number1(step)
                 return [figure, numeric_field, numeric_step]
         except ValueError:

@@ -27,10 +27,10 @@ class Game():
             if move and not list_avoiding_checkmate or move in list_avoiding_checkmate:
                 class_figure = get_figure(move[0])(move[1])
                 dest_field = class_figure.validate_move(move[-1], color, start_game)
+                # print(dest_field)
                 if dest_field and queue == 'player1':
-                    if dest_field.isalpha():
-                        make_castling(color, cordinates_figures_player1, dest_field)
-                    else:
+                    try:
+                        float(dest_field)
                         for i in cordinates_figures_player1:
                             if i[1] == move[1]:
                                 i[1] = dest_field
@@ -38,14 +38,16 @@ class Game():
                                 if [opponents_figure, dest_field] in cordinates_figures_player2:
                                     cordinates_figures_player2.remove([opponents_figure, dest_field])
                                     player1.taken_figure.append(opponents_figure)
-                        change_pawn_with_any_figure(color, player2.taken_figure, cordinates_figures_player1)
+                    except ValueError:
+                        make_castling(color, cordinates_figures_player1, dest_field)
+
+                    change_pawn_with_any_figure(color, player2.taken_figure, cordinates_figures_player1)
                     queue = 'player2'
                     color = 'black'
                     king = 'b_k'
                 elif dest_field and queue == 'player2':
-                    if dest_field.isalpha():
-                        make_castling(color, cordinates_figures_player2, dest_field)
-                    else:
+                    try:
+                        float(dest_field)
                         for i in cordinates_figures_player2:
                             if i[1] == move[1]:
                                 i[1] = dest_field
@@ -53,7 +55,10 @@ class Game():
                                 if [opponents_figure, dest_field] in cordinates_figures_player2:
                                     cordinates_figures_player1.remove([opponents_figure, dest_field])
                                     player2.taken_figure.append(opponents_figure)
-                        change_pawn_with_any_figure(color, player1.taken_figure, cordinates_figures_player2)
+                    except ValueError:
+                        make_castling(color, cordinates_figures_player2, dest_field)
+
+                    change_pawn_with_any_figure(color, player1.taken_figure, cordinates_figures_player2)
                     queue = 'player1'
                     color = 'white'
                     king = 'w_k'
@@ -84,7 +89,6 @@ class Game():
                     else:
                         list_avoiding_checkmate = []
         return print('Winner {}'.format(queue))
-
 
 
 a=Game()
