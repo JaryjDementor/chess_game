@@ -44,19 +44,20 @@ def move_player(desk):
 
 def change_pawn_with_any_figure(color, taken_figures, cor_figurs):
     pawn = 'w_p'
-    index_desk = 0
+    index_desk = '0'
     if color == 'black':
         pawn = 'b_p'
-        index_desk = 7
+        index_desk = '7'
     choice_player = None
-    for i in cor_figurs:
-        if i[0] == pawn and i[-1][0] == index_desk:
-            print(taken_figures)
-            while choice_player not in taken_figures:
-                choice_player = input('Please choose a figure: ')
-            i[0] = choice_player
-            taken_figures.remove(choice_player)
-            break
+    if taken_figures:
+        for i in cor_figurs:
+            if i[0] == pawn and i[-1][0] == index_desk:
+                print(taken_figures)
+                while choice_player not in taken_figures:
+                    choice_player = input('Please choose a figure: ')
+                i[0] = choice_player
+                taken_figures.remove(choice_player)
+                break
 
 class Boards_field:
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
