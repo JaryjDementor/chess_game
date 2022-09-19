@@ -7,18 +7,18 @@ class Game():
         game = Move()
         player1 = Player1()
         player1.name, cordinates_figures_player1 = name_player1, player1.figures()
-        taken_figures_player1 = player1.taken_figure
+        # taken_figures_player1 = player1.taken_figure
 
         player2 = Player2()
         player2.name, cordinates_figures_player2 = name_player2, player2.figures()
-        taken_figures_player2 = player2.taken_figure
+        # taken_figures_player2 = player2.taken_figure
         start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
         for i in start_game:
             print(i)
         value_for_while = 0
         queue = 'player1'
         color = 'white'
-        color_figure = 'b'
+        # color_figure = 'b'
         king = 'b_k'
         opponents_figure = None
         list_avoiding_checkmate = []
@@ -52,7 +52,7 @@ class Game():
                             if i[1] == move[1]:
                                 i[1] = dest_field
                                 opponents_figure = start_game[int(dest_field[0])][int(dest_field[-1])]
-                                if [opponents_figure, dest_field] in cordinates_figures_player2:
+                                if [opponents_figure, dest_field] in cordinates_figures_player1:
                                     cordinates_figures_player1.remove([opponents_figure, dest_field])
                                     player2.taken_figure.append(opponents_figure)
                     except ValueError:
@@ -62,32 +62,32 @@ class Game():
                     queue = 'player1'
                     color = 'white'
                     king = 'w_k'
-            start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
-            print(queue)
-            print('oponents figure', player2.taken_figure)
-            kings_field = ''
-            count = 0
-            for i in start_game:
-                print(i)
-                for j in i:
-                    if j == king:
-                         kings_field = str(start_game.index(i)) + '.' + str(count)
-                    count+=1
+                start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
+                print(queue)
+                print('oponents figure', player2.taken_figure)
+                kings_field = ''
                 count = 0
-            print('oponents figure', player1.taken_figure)
-            opponents_figure = None
-            watcher = Watcher()
-            dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, start_game)
-            for i in dict_avalible_move_oponents.values():
+                for i in start_game:
+                    print(i)
+                    for j in i:
+                        if j == king:
+                             kings_field = str(start_game.index(i)) + '.' + str(count)
+                        count+=1
+                    count = 0
+                print('oponents figure', player1.taken_figure)
+                opponents_figure = None
+                watcher = Watcher()
+                dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, start_game)
+                for i in dict_avalible_move_oponents.values():
 
-                if kings_field in i:
-                    print('ugroza korolu', i)
-                    list_avoiding_checkmate = watcher.avoiding_checkmate([king, kings_field], start_game, move[-1])
-                    print('vozmoznye vychody s mata', list_avoiding_checkmate)
-                    if list_avoiding_checkmate == []:
-                        value_for_while = 1
-                    else:
-                        list_avoiding_checkmate = []
+                    if kings_field in i:
+                        print('ugroza korolu', i)
+                        list_avoiding_checkmate = watcher.avoiding_checkmate([king, kings_field], start_game, move[-1])
+
+                        if list_avoiding_checkmate == []:
+                            value_for_while = 1
+                        else:
+                            list_avoiding_checkmate = []
         return print('Winner {}'.format(queue))
 
 
