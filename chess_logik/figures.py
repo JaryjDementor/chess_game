@@ -119,7 +119,7 @@ class Figure(Boards_field):
             return []
 
 
-class Pawn(Figure):
+class Pawn(Figure): #+
 
     def first_move(self, list_move, color, desk):
         first_step = -2
@@ -179,20 +179,20 @@ class Pawn(Figure):
         return list_moves
 
 
-class Rook(Figure):
+class Rook(Figure): #+
     def list_available_moves(self, color, desk):
         numeric_field = self.field
         list_moves = []
         color_figure = 'b'
         cor = [-1, 1]
-        value_for_while = 0
         if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
-            count = 1
+
             for i in cor:
-                while value_for_while == 0:
+                while True:
                     new_numeric_field = str(int(numeric_field[0]) + i) + '.' + numeric_field[-1]
+
                     if new_numeric_field not in self.board:
                         break
                     try:
@@ -206,8 +206,9 @@ class Rook(Figure):
                 numeric_field = self.field
 
             for i in cor:
-                while value_for_while == 0:
+                while True:
                     new_numeric_field = numeric_field[0] + '.' + str(int(numeric_field[-1]) + i)
+
                     if new_numeric_field not in self.board:
                         break
                     try:
@@ -222,7 +223,7 @@ class Rook(Figure):
         return list_moves
 
 
-class Bishop(Figure):
+class Bishop(Figure): #+
     def list_available_moves(self, color, desk):
         list_moves = []
         numeric_field = self.field
@@ -241,7 +242,7 @@ class Bishop(Figure):
                 y = int(numeric_field[-1])
                 new_numeric_field = str(x + i[0]) + "." + str(y + i[-1])
 
-                if not new_numeric_field in self.board:
+                if new_numeric_field not in self.board:
                     numeric_field = self.field
                     break
                 try:
@@ -255,10 +256,9 @@ class Bishop(Figure):
                         list_moves.append(new_numeric_field)
                     numeric_field = self.field
                     break
-
         return list_moves
 
-class Knight(Figure):#+
+class Knight(Figure): #+
     def list_available_moves(self, color, desk):
         list_moves = []
         color_figure = 'b'
@@ -272,9 +272,10 @@ class Knight(Figure):#+
             [2, 1],
             [1, 2],
         ]
+        if color == 'black':
+            color_figure = 'w'
+
         if self.field in self.board:
-            if color == 'black':
-                color_figure = 'w'
 
             for i in list_cor:
                 x = int(self.field[0]) + i[0]
@@ -288,7 +289,6 @@ class Knight(Figure):#+
                     except ValueError:
                         if field[0] == color_figure:
                             list_moves.append(cor_xy)
-
         return list_moves
 
 
@@ -383,15 +383,13 @@ class King(Figure):
                 except ValueError:
                     break
 
-
-
             value = 'short'
 
         return avalible_castling
 
 
 class Watcher:
-    def dict_avalible_move_oponents(self, color, desk):
+    def dict_avalible_move_figures(self, color, desk):
         # potrzebuje zmiany coloru dla funkcji King.validat_move
         dict_avalible_moves = {}
         color_figures = 'b'
@@ -413,21 +411,13 @@ class Watcher:
             count = 0
         return dict_avalible_moves
 
-    def avoiding_checkmate(self, kings_cor, desk, field):
-
-        color = 'white'
-        color_oponents = 'black'
-        list_move = [field]
+    def search_possible_fields(self, kings_cor, field):
         cor = [1, 1]
-        list_avoiding_checkmate = []
-
-        if kings_cor[0][0] == 'b':
-            color = 'black'
-            color_oponents = 'white'
-
         x = abs(int(kings_cor[-1][0]) - int(field[0]))
         y = abs(int(kings_cor[-1][-1]) - int(field[-1]))
         check_knight = str(x) + '.' + str(y)
+        possible_fields = [field]
+
         if check_knight != '1.2' and check_knight != '2.1':
             if field[0] > kings_cor[-1][0]:
                 cor[0] = -1
@@ -437,35 +427,29 @@ class Watcher:
                 cor[0] = 0
             elif field[0] != kings_cor[-1][0] and field[-1] == kings_cor[-1][-1]:
                 cor[-1] = 0
-
             value_for_while = field
             while float(value_for_while) != float(kings_cor[-1]):
 
                 new_field = str(int(value_for_while[0]) + cor[0]) + '.' + str(int(value_for_while[-1]) + cor[-1])
                 if new_field != kings_cor[-1]:
-                    list_move.append(new_field)
+                    possible_fields.append(new_field)
                 value_for_while = new_field
-        King = get_figure(kings_cor[0])(kings_cor[-1])
-        list_move_king = King.list_available_moves(color, desk)
-        for i in list_move_king[-1::1]:
-            dest_field = King.validate_move(i, color, desk)
-            if not dest_field:
-                list_move_king.remove(i)
+        return possible_fields
 
-        for i in list_move_king:
-            list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
+    def search_possible_figure(self, kings_cor, desk, possible_fields, color):
 
-        dict_avalible_move = self.dict_avalible_move_oponents(color_oponents, desk)
+        list_possible_figure = []
+
+        dict_avalible_move = self.dict_avalible_move_figures(color, desk)
         dict_avalible_move.pop(tuple(kings_cor))
 
-        for i in list_move:
+        for i in possible_fields:
             for j, k in dict_avalible_move.items():
                 if i in k:
-                    list_avoiding_checkmate.append([j[0], j[-1], i])
+                    list_possible_figure.append([j[0], j[-1], i])
+        return list_possible_figure
 
-        # musze sprawdzic czy po kroku figury, z listy list_avoiding_checkmate,
-        # nie bedzie znowu zagrozenia
-
+    def check_list_avoiding_checkmate(self, list_avoiding_checkmate, kings_cor, color, desk):
         for i in list_avoiding_checkmate[-1::-1]:
             desk_checmate_check = copy.deepcopy(desk)
             desk_checmate_check[int(i[1][0])][int(i[1][-1])] = i[1]
@@ -478,10 +462,37 @@ class Watcher:
                     if k == kings_cor[0]:
                         kings_field = str(desk_checmate_check.index(j)) + '.' + str(j.index(k))
 
-            dict_avalible_move_oponents = self.dict_avalible_move_oponents(color, desk_checmate_check)
+            dict_avalible_move_oponents = self.dict_avalible_move_figures(color, desk_checmate_check)
 
             for j in dict_avalible_move_oponents.values():
                 if kings_field in j:
                     list_avoiding_checkmate.remove(i)
                     break
         return list_avoiding_checkmate
+
+    def avoiding_checkmate(self, kings_cor, desk, field):
+
+        color = 'white'
+        color_oponents = 'black'
+        if kings_cor[0][0] == 'b':
+            color = 'black'
+            color_oponents = 'white'
+
+        possible_fields = self.search_possible_fields(kings_cor, field)
+
+        list_avoiding_checkmate = self.search_possible_figure(kings_cor, desk, possible_fields, color_oponents)
+
+        King = get_figure(kings_cor[0])(kings_cor[-1])
+        list_move_king = King.list_available_moves(color, desk)
+
+        for i in list_move_king[-1::1]:
+            dest_field = King.validate_move(i, color, desk)
+            if not dest_field:
+                list_move_king.remove(i)
+
+        for i in list_move_king:
+            list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
+
+        verified_list_avoiding_checkmate = self.check_list_avoiding_checkmate(list_avoiding_checkmate, kings_cor, color, desk)
+
+        return verified_list_avoiding_checkmate
