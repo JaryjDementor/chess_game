@@ -1,6 +1,6 @@
 import copy
 
-def make_castling(color, cor_figures, step):
+def make_castling(color, cor_figures, step): #+
     short_castling = [['w_k', '7.4', '7.6'], ['w_r', '7.7', '7.5']]
     long_castling = [['w_k', '7.4', '7.1'], ['w_r', '7.0', '7.2']]
     if color == 'black':
@@ -19,7 +19,7 @@ def make_castling(color, cor_figures, step):
             elif i[0] == long_castling[-1][0] and i[-1] == long_castling[-1][1]:
                 i[-1] = long_castling[-1][-1]
 
-def move_player(desk):
+def move_player(desk): #+
     figure = input('figure - ')
     try:
         get_figure(figure)
@@ -42,7 +42,7 @@ def move_player(desk):
 
 
 
-def change_pawn_with_any_figure(color, taken_figures, cor_figurs):
+def change_pawn_with_any_figure(color, taken_figures, cor_figurs): #+
     pawn = 'w_p'
     index_desk = '0'
     if color == 'black':
@@ -120,43 +120,62 @@ class Figure(Boards_field):
 
 
 class Pawn(Figure):
-    def list_available_moves(self, color, desk):
-        list_moves = []
+
+    def first_move(self, list_move, color, desk):
+        first_step = -2
+        if color == 'black':
+            first_step = 2
+        field = str(int(self.field[0]) + first_step) + self.field[1:]
+        try:
+            if field in self.board:
+                step = desk[int(field[0])][int(field[-1])]
+                float(step)
+                list_move.append(step)
+        except IndexError:
+            pass
+        except ValueError:
+            pass
+
+    def kill_figure(self, list_move, color, desk):
         cor_left = str(int(self.field[0]) - 1) + '.' + str(int(self.field[-1]) - 1)
         cor_right = str(int(self.field[0]) - 1) + '.' + str(int(self.field[-1]) + 1)
-        cor_x = -1
         color_figure = 'b'
-        first_step = -2
+        if color == 'black':
+            cor_left = str(int(self.field[0]) + 1) + '.' + str(int(self.field[-1]) - 1)
+            cor_right = str(int(self.field[0]) + 1) + '.' + str(int(self.field[-1]) + 1)
+            color_figure = 'w'
+        try:
+            oponents_figure = desk[int(cor_left[0])][int(cor_left[-1])]
+            if cor_left in self.board and oponents_figure[0] == color_figure:
+                list_move.append(cor_left)
+        except IndexError:
+            pass
+        try:
+            oponents_figure = desk[int(cor_right[0])][int(cor_right[-1])]
+            if cor_right in self.board and oponents_figure[0] == color_figure:
+                list_move.append(cor_right)
+        except IndexError:
+            pass
 
-        if self.field in self.board:
-            if color == 'black':
-                color_figure = 'w'
-                cor_x = 1
-                first_step = 2
-                cor_left = str(int(self.field[0]) + 1) + '.' + str(int(self.field[-1]) - 1)
-                cor_right = str(int(self.field[0]) + 1) + '.' + str(int(self.field[-1]) + 1)
-            if self.field[0] == '6' or self.field[0] == '1':
-                try:
-                    first_step = desk[int(self.field[0]) + first_step ][int(self.field[-1])]
-                    if first_step in self.board:
-                        list_moves.append(first_step)
-                except IndexError:
-                    pass
-            try:
-                step=desk[int(self.field[0]) + cor_x][int(self.field[-1])][0]
-                if step != 'w' or step != 'b':
-                    list_moves.append(str(int(self.field[0]) + cor_x) + '.' + self.field[-1])
+    def list_available_moves(self, color, desk):
+        # example figure on board 'w_p'/'b_p' - white/black pawn
 
-                a = desk[int(cor_left[0])][int(cor_left[-1])]
-                if a[0] == color_figure:
-                    if cor_left in self.board:
-                        list_moves.append(cor_left)
-                b  = desk[int(cor_right[0])][int(cor_right[-1])]
-                if b[0] == color_figure:
-                    if cor_right in self.board:
-                        list_moves.append(cor_right)
-            except IndexError:
-                pass
+        list_moves = []
+        cor_x = -1
+
+        if color == 'black':
+            cor_x = 1
+        try:
+            step=desk[int(self.field[0]) + cor_x][int(self.field[-1])][0]
+            if step != 'w' or step != 'b':
+                list_moves.append(str(int(self.field[0]) + cor_x) + '.' + self.field[-1])
+        except IndexError:
+            pass
+        if self.field[0] == '6' or self.field[0] == '1':
+            self.first_move(list_moves, color, desk)
+
+        self.kill_figure(list_moves, color, desk)
+
         return list_moves
 
 
@@ -239,7 +258,7 @@ class Bishop(Figure):
 
         return list_moves
 
-class Knight(Figure):
+class Knight(Figure):#+
     def list_available_moves(self, color, desk):
         list_moves = []
         color_figure = 'b'
@@ -273,7 +292,7 @@ class Knight(Figure):
         return list_moves
 
 
-class Queen(Figure):
+class Queen(Figure):#+
     def list_available_moves(self, color, desk):
         bishop = Bishop(self.field)
         rook = Rook(self.field)
@@ -288,7 +307,7 @@ class King(Figure):
     count_move = 0
 
     def list_available_moves(self, color, desk):
-        king = 'w_k'
+        # king = 'w_k'
         list_moves = []
         color_figure = 'b'
         list_cor = [
@@ -305,7 +324,7 @@ class King(Figure):
         if self.field in self.board:
             if color == 'black':
                 color_figure = 'w'
-                king = 'b_k'
+                # king = 'b_k'
             if self.count_move == 0:
                 castling_list = self.castling_king(color, desk)
                 if castling_list:
@@ -330,15 +349,12 @@ class King(Figure):
         list_moves = self.list_available_moves(color, desk)
         watcher = Watcher()
         dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, desk)
-        invalid_move = []
 
-        for i in list_moves:
+        for i in list_moves[-1::1]:
             for j in dict_avalible_move_oponents.values():
                 if i in j:
-                    invalid_move.append(i)
+                    list_moves.remove(i)
                     break
-        for i in invalid_move:
-            list_moves.remove(i)
 
         if dest_field in list_moves:
             self.count_move += 1
@@ -431,13 +447,10 @@ class Watcher:
                 value_for_while = new_field
         King = get_figure(kings_cor[0])(kings_cor[-1])
         list_move_king = King.list_available_moves(color, desk)
-        ivalid_move = []
-        for i in list_move_king:
+        for i in list_move_king[-1::1]:
             dest_field = King.validate_move(i, color, desk)
             if not dest_field:
-                ivalid_move.append(i)
-        for i in ivalid_move:
-            list_move_king.remove(i)
+                list_move_king.remove(i)
 
         for i in list_move_king:
             list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
@@ -453,8 +466,7 @@ class Watcher:
         # musze sprawdzic czy po kroku figury, z listy list_avoiding_checkmate,
         # nie bedzie znowu zagrozenia
 
-        ivalid_move = []
-        for i in list_avoiding_checkmate:
+        for i in list_avoiding_checkmate[-1::-1]:
             desk_checmate_check = copy.deepcopy(desk)
             desk_checmate_check[int(i[1][0])][int(i[1][-1])] = i[1]
             desk_checmate_check[int(i[-1][0])][int(i[-1][-1])] = i[0]
@@ -470,8 +482,6 @@ class Watcher:
 
             for j in dict_avalible_move_oponents.values():
                 if kings_field in j:
-                    ivalid_move.append(i)
+                    list_avoiding_checkmate.remove(i)
                     break
-        for i in ivalid_move:
-            list_avoiding_checkmate.remove(i)
         return list_avoiding_checkmate
