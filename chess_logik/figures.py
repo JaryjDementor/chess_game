@@ -1,5 +1,10 @@
 import copy
 
+def make_move(cor_figures, field, dest_field):
+    for i in cor_figures:
+        if i[1] == field:
+            i[1] = dest_field
+
 def make_castling(color, cor_figures, step): #+
     short_castling = [['w_k', '7.4', '7.6'], ['w_r', '7.7', '7.5']]
     long_castling = [['w_k', '7.4', '7.1'], ['w_r', '7.0', '7.2']]
@@ -303,7 +308,7 @@ class Queen(Figure):#+
         return list_moves_bishop
 
 
-class King(Figure):
+class King(Figure): #+
     count_move = 0
 
     def list_available_moves(self, color, desk):
@@ -348,7 +353,7 @@ class King(Figure):
     def validate_move(self, dest_field, color, desk):
         list_moves = self.list_available_moves(color, desk)
         watcher = Watcher()
-        dict_avalible_move_oponents = watcher.dict_avalible_move_oponents(color, desk)
+        dict_avalible_move_oponents = watcher.dict_avalible_move_figures(color, desk)
 
         for i in list_moves[-1::1]:
             for j in dict_avalible_move_oponents.values():
