@@ -7,18 +7,15 @@ class Game():
         game = Move()
         player1 = Player1()
         player1.name, cordinates_figures_player1 = name_player1, player1.figures()
-        # taken_figures_player1 = player1.taken_figure
 
         player2 = Player2()
         player2.name, cordinates_figures_player2 = name_player2, player2.figures()
-        # taken_figures_player2 = player2.taken_figure
         start_game = game.start(cordinates_figures_player1, cordinates_figures_player2)
         for i in start_game:
             print(i)
         value_for_while = 0
         queue = 'player1'
         color = 'white'
-        # color_figure = 'b'
         king = 'b_k'
         opponents_figure = None
         list_avoiding_checkmate = []
