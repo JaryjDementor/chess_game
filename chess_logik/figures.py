@@ -38,6 +38,8 @@ def move_player(desk): #+
                     return [figure, numeric_field, step]
                 numeric_step = letter_to_number1(step)
                 return [figure, numeric_field, numeric_step]
+
+            print('Not exist figure')
         except ValueError:
             print('Not exist field')
         except IndexError:
@@ -495,8 +497,9 @@ class Watcher:
             if not dest_field:
                 list_move_king.remove(i)
 
-        for i in list_move_king:
-            list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
+        list_avoiding_checkmate = list_avoiding_checkmate.__add__(list_move_king)
+        # for i in list_move_king:
+        #     list_avoiding_checkmate.append([kings_cor[0], kings_cor[-1], i])
 
         verified_list_avoiding_checkmate = self.check_list_avoiding_checkmate(list_avoiding_checkmate, kings_cor, color, desk)
 
