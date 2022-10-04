@@ -11,7 +11,7 @@ class Figure():
     def list_available_moves(self, desk):
         pass
 
-    def make_move(self, dest_field, desk):  # informującą, czy możliwy jest ruch na wskazane pole.
+    def make_move(self, dest_field, desk, cor_opponents_figures):  # informującą, czy możliwy jest ruch na wskazane pole.
         if dest_field in self.list_available_moves(desk):
             self.move = False
             self.field = dest_field
@@ -188,3 +188,157 @@ class Knight(Figure):
                     if field[0] == opponents_figure:
                         list_moves.append(cor_xy)
         return list_moves
+
+class King(Figure):
+    def list_available_moves(self, desk):
+
+        list_moves = []
+        opponents_figure = 'b'
+        list_cor = [
+            [-1, 1],
+            [1, 1],
+            [1, -1],
+            [-1, -1],
+            [-1, 0],
+            [0, -1],
+            [1, 0],
+            [0, 1],
+        ]
+
+        if self.color == 'black':
+            opponents_figure = 'w'
+
+        # if self.count_move == 0:
+        #     castling_list = self.castling_king(color, desk)
+        #     if castling_list:
+        #         for i in castling_list:
+        #             list_moves.append(i)
+
+        for i in list_cor:
+            x = int(self.field[0]) + i[0]
+            y = int(self.field[-1]) + i[1]
+            cor_xy = str(x) + "." + str(y)
+            if cor_xy in self.board:
+                field = desk[x][y]
+                try:
+                    float(field)
+                    list_moves.append(cor_xy)
+                except ValueError:
+                    if field[0] == opponents_figure:
+                        list_moves.append(cor_xy)
+        return list_moves
+
+    def make_move(self, dest_field, desk, cor_opponents_figures):
+        list_moves = self.list_available_moves(desk)
+
+        watcher = Watcher()
+        dict_avalible_moves_opponents = watcher.dict_avalible_move_figures(cor_opponents_figures, desk)
+        for i in  list_moves[-1::1]:
+            for value in dict_avalible_moves_opponents.values():
+                if i in value:
+                    list_moves.remove(i)
+
+        if dest_field in list_moves:
+            self.move = False
+            self.field = dest_field
+            return True
+
+    def castling_king(self, color, desk):
+        king_cor = '7.4'
+        rook = 'w_r'
+        if color == 'black':
+            king_cor = '0.4'
+            rook = 'b_r'
+        avalible_castling = []
+        cor = [-1, 1]
+        value = 'long'
+        for i in cor:
+            cor_for_castling = king_cor
+            while cor_for_castling in self.board:
+                cor_for_castling = cor_for_castling[:2] + str(int(cor_for_castling[-1]) + i)
+                if cor_for_castling[-1] == '0' or cor_for_castling[-1] == '7':
+                    figure = desk[int(cor_for_castling[0])][int(cor_for_castling[-1])]
+                    if figure == rook:
+                        avalible_castling.append('{} castling'.format(value))
+                        break
+                try:
+                    float(desk[int(cor_for_castling[0])][int(cor_for_castling[-1])])
+                except ValueError:
+                    break
+
+            value = 'short'
+
+        return avalible_castling
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Watcher():
+    def dict_avalible_move_figures(self, cor_figures, desk):
+        dict_avalible_moves = {}
+
+        for i in cor_figures:
+            figure = i[0]
+            list_moves = figure.list_available_moves(desk)
+            dict_avalible_moves[tuple(i)] = list_moves
+
+        return dict_avalible_moves
+
+    def search_possible_fields(self, kings_cor, field):
+        # sprawdzam jakie pola są pomiędzy Królem i zagrażającą figurą
+
+        cor = [1, 1]
+        x = abs(int(kings_cor[-1][0]) - int(field[0]))
+        y = abs(int(kings_cor[-1][-1]) - int(field[-1]))
+        check_knight = str(x) + '.' + str(y)
+        possible_fields = [field]
+
+        if check_knight != '1.2' and check_knight != '2.1':
+            if field[0] > kings_cor[-1][0]:
+                cor[0] = -1
+            if field[-1] > kings_cor[-1][-1]:
+                cor[-1] = -1
+            if field[0] == kings_cor[-1][0] and field[-1] != kings_cor[-1][-1]:
+                cor[0] = 0
+            elif field[0] != kings_cor[-1][0] and field[-1] == kings_cor[-1][-1]:
+                cor[-1] = 0
+            value_for_while = field
+
+            while float(value_for_while) != float(kings_cor[-1]):
+
+                new_field = str(int(value_for_while[0]) + cor[0]) + '.' + str(int(value_for_while[-1]) + cor[-1])
+                if new_field != kings_cor[-1]:
+                    possible_fields.append(new_field)
+                value_for_while = new_field
+        return possible_fields
+
+    def search_possible_figure(self, cor_figures, kings_cor, desk, possible_fields):
+
+        list_possible_figure = []
+
+        dict_avalible_move = self.dict_avalible_move_figures(cor_figures, desk)
+        dict_avalible_move.pop(tuple(kings_cor))
+
+        for i in possible_fields:
+            for kej, value in dict_avalible_move.items():
+                if i in value:
+                    list_possible_figure.append([kej[0], kej[-1], i])
+
+        return list_possible_figure
+

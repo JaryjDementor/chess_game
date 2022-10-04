@@ -15,6 +15,7 @@ class Game():
 
         queue = 'player1'
         cor_figures = pl1.cor_white()
+        cor_opponents_figures = pl2.cor_black()
         opponents_figure = None
         list_avoiding_checkmate = []
 
@@ -22,11 +23,13 @@ class Game():
             figure_dest_field = get_figure_dest_field(cor_figures)
             try:
                 figure, dest_field = figure_dest_field
-                if figure.make_move(dest_field, board):
+                if figure.make_move(dest_field, board, cor_opponents_figures):
                     if queue == 'player1':
+                        cor_opponents_figures = pl1.cor_black()
                         cor_figures = pl2.cor_white()
                         queue = 'player2'
                     elif queue == 'player2':
+                        cor_opponents_figures = pl2.cor_black()
                         cor_figures = pl1.cor_black()
                         queue = 'player1'
                     board = game.start(pl1.cor_white(), pl2.cor_black())
