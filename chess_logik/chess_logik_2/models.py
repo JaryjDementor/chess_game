@@ -1,4 +1,4 @@
-from figures import Pawn, Rook, Bishop, Knight
+from figures import Pawn, Rook, Bishop, Knight, Watcher
 from dataclasses import make_dataclass
 
 
@@ -123,16 +123,26 @@ class Player2(User):
 
 
 
-# pl1 = Player1('bob')
-# pl2 = Player2('ron')
-#
-# a = Board()
-#
-# board = a.start(pl1.list_figures(), pl2.list_figures())
-# field = '7.0'
-# dest_field = '7.2'
-#
-#
-#
+
+pl1 = Player1('bob')
+pl2 = Player2('ron')
+
+a = Board()
+
+board = a.start(pl1.cor_white(), pl2.cor_black())
+
 # for i in board:
 #     print(i)
+
+cor = pl1.cor_white()
+
+# for i in cor:
+#     print(i[1], i[0].list_available_moves(board))
+
+# print(pl1.cor_white())
+#
+w = Watcher()
+d = w.dict_avalible_move_figures(pl1.cor_white(), board)
+
+for key, value in d.items():
+    print(key, value)
