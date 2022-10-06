@@ -23,7 +23,7 @@ class Game():
             figure_dest_field = get_figure_dest_field(cor_figures)
             try:
                 figure, dest_field = figure_dest_field
-                if figure.make_move(dest_field, board, cor_opponents_figures):
+                if figure.make_move(dest_field, board, cor_opponents_figures, cor_figures):
                     if queue == 'player1':
                         cor_opponents_figures = pl1.cor_black()
                         cor_figures = pl2.cor_white()
