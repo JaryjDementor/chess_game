@@ -11,7 +11,7 @@ class Figure():
     def list_available_moves(self, desk):
         pass
 
-    def make_move(self, dest_field, desk, cor_opponents_figures):  # informującą, czy możliwy jest ruch na wskazane pole.
+    def make_move(self, dest_field, desk, cor_opponents_figures, cor_figures):
         if dest_field in self.list_available_moves(desk):
             self.move = False
             self.field = dest_field
@@ -189,6 +189,23 @@ class Knight(Figure):
                         list_moves.append(cor_xy)
         return list_moves
 
+
+class Queen(Figure):
+    def list_available_moves(self, desk):
+        b = 'w_b'
+        r = 'w_r'
+        if self.color == 'black':
+            b = 'b_b'
+            r = 'b_r'
+        bishop = Bishop(self.color, self.field, b)
+        rook = Rook(self.color, self.field, r)
+        list_moves_bishop = bishop.list_available_moves(desk)
+        list_moves_rook = rook.list_available_moves(desk)
+        list_move_queen = list_moves_bishop.__add__(list_moves_rook)
+
+        return list_move_queen
+
+
 class King(Figure):
     def list_available_moves(self, desk):
 
@@ -208,12 +225,6 @@ class King(Figure):
         if self.color == 'black':
             opponents_figure = 'w'
 
-        # if self.count_move == 0:
-        #     castling_list = self.castling_king(color, desk)
-        #     if castling_list:
-        #         for i in castling_list:
-        #             list_moves.append(i)
-
         for i in list_cor:
             x = int(self.field[0]) + i[0]
             y = int(self.field[-1]) + i[1]
@@ -228,7 +239,52 @@ class King(Figure):
                         list_moves.append(cor_xy)
         return list_moves
 
-    def make_move(self, dest_field, desk, cor_opponents_figures):
+    def castling_king(self, list_moves, cor_opponents_figures, cor_figures, desk):
+        king_cor = '7.4'
+        rook = 'w_r'
+        if self.color == 'black':
+            king_cor = '0.4'
+            rook = 'b_r'
+        cor = [-1, 1]
+        castling = 'long'
+        watcher = Watcher()
+        opponents_figure_move = watcher.dict_avalible_move_figures(cor_opponents_figures, desk)
+        for i in cor:
+            cor_for_castling = king_cor
+            while cor_for_castling in self.board:
+                cor_for_castling = cor_for_castling[:2] + str(int(cor_for_castling[-1]) + i)
+                figure = desk[int(cor_for_castling[0])][int(cor_for_castling[-1])]
+                if figure == rook:
+                    for key in cor_figures.keys():
+                        if figure in key and cor_for_castling in key:
+                            if key[0].move:
+                                list_moves.append('{} castling'.format(castling))
+                try:
+                    float(figure)
+                    for value in opponents_figure_move.values():
+                        if figure in value:
+                            break
+                except ValueError:
+                    break
+
+    def make_castling(self, cor_figures, step):  # +
+        short_castling = [['w_k', '7.4', '7.6'], ['w_r', '7.7', '7.5']]
+        long_castling = [['w_k', '7.4', '7.1'], ['w_r', '7.0', '7.2']]
+
+        if self.color == 'black':
+            short_castling = [['b_k', '0.4', '0.6'], ['b_r', '0.7', '0.5']]
+            long_castling = [['b_k', '0.4', '0.1'], ['b_r', '0.0', '0.2']]
+        castling = short_castling
+        if step == 'long castling':
+            castling = long_castling
+
+        for key in cor_figures:
+            if castling[0][0] in key:
+                key[0].field = castling[0][-1]
+            elif castling[1][0] in key and castling[1][1] in key:
+                key[0].field = castling[1][-1]
+
+    def make_move(self, dest_field, desk, cor_opponents_figures, cor_figures):
         list_moves = self.list_available_moves(desk)
 
         watcher = Watcher()
@@ -238,37 +294,23 @@ class King(Figure):
                 if i in value:
                     list_moves.remove(i)
 
+        if self.move:
+            self.castling_king(list_moves, cor_opponents_figures, cor_figures, desk)
+
         if dest_field in list_moves:
-            self.move = False
-            self.field = dest_field
+            try:
+                float(dest_field)
+                self.move = False
+                self.field = dest_field
+            except ValueError:
+                self.make_castling(cor_figures, dest_field)
             return True
 
-    def castling_king(self, color, desk):
-        king_cor = '7.4'
-        rook = 'w_r'
-        if color == 'black':
-            king_cor = '0.4'
-            rook = 'b_r'
-        avalible_castling = []
-        cor = [-1, 1]
-        value = 'long'
-        for i in cor:
-            cor_for_castling = king_cor
-            while cor_for_castling in self.board:
-                cor_for_castling = cor_for_castling[:2] + str(int(cor_for_castling[-1]) + i)
-                if cor_for_castling[-1] == '0' or cor_for_castling[-1] == '7':
-                    figure = desk[int(cor_for_castling[0])][int(cor_for_castling[-1])]
-                    if figure == rook:
-                        avalible_castling.append('{} castling'.format(value))
-                        break
-                try:
-                    float(desk[int(cor_for_castling[0])][int(cor_for_castling[-1])])
-                except ValueError:
-                    break
 
-            value = 'short'
 
-        return avalible_castling
+
+
+
 
 
 

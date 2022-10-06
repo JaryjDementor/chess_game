@@ -1,4 +1,4 @@
-from figures import Pawn, Rook, Bishop, Knight, Watcher
+from figures import Pawn, Rook, Bishop, Knight, Watcher, King, Queen
 from dataclasses import make_dataclass
 
 
@@ -34,6 +34,10 @@ class Board():
 
 class Chess_Figures():
     def white_figures(self):
+        w_k = King('white', '7.4', 'w_k')
+
+        w_q = Queen('white', '7.3', 'w_q')
+
         w_r_1 = Rook('white', '7.0', 'w_r')
         w_r_2 = Rook('white', '7.7', 'w_r')
 
@@ -51,9 +55,13 @@ class Chess_Figures():
         w_p_6 = Pawn('white', '6.5', 'w_p')
         w_p_7 = Pawn('white', '6.6', 'w_p')
         w_p_8 = Pawn('white', '6.7', 'w_p')
-        return [w_r_1, w_r_2, w_kn_1, w_kn_2, w_b_1, w_b_2, w_p_1, w_p_2, w_p_3, w_p_4, w_p_5, w_p_6, w_p_7, w_p_8]
+        return [w_k, w_q, w_r_1, w_r_2, w_kn_1, w_kn_2, w_b_1, w_b_2, w_p_1, w_p_2, w_p_3, w_p_4, w_p_5, w_p_6, w_p_7, w_p_8]
 
     def black_figures(self):
+        b_k = King('black', '0.4', 'b_k')
+
+        b_q = Queen('black', '0.3', 'b_q')
+
         b_r_1 = Rook('black', '0.7', 'b_r')
         b_r_2 = Rook('black', '0.0', 'b_r')
 
@@ -71,7 +79,7 @@ class Chess_Figures():
         b_p_6 = Pawn('black', '1.5', 'b_p')
         b_p_7 = Pawn('black', '1.6', 'b_p')
         b_p_8 = Pawn('black', '1.7', 'b_p')
-        return [b_r_1, b_r_2, b_kn_1, b_kn_2, b_b_1, b_b_2, b_p_1, b_p_2, b_p_3, b_p_4, b_p_5, b_p_6, b_p_7, b_p_8]
+        return [b_k, b_q, b_r_1, b_r_2, b_kn_1, b_kn_2, b_b_1, b_b_2, b_p_1, b_p_2, b_p_3, b_p_4, b_p_5, b_p_6, b_p_7, b_p_8]
 
 
 class Cor_Figures(Chess_Figures):
@@ -131,8 +139,8 @@ a = Board()
 
 board = a.start(pl1.cor_white(), pl2.cor_black())
 
-# for i in board:
-#     print(i)
+for i in board:
+    print(i)
 
 cor = pl1.cor_white()
 
@@ -141,8 +149,8 @@ cor = pl1.cor_white()
 
 # print(pl1.cor_white())
 #
-w = Watcher()
-d = w.dict_avalible_move_figures(pl1.cor_white(), board)
-
-for key, value in d.items():
-    print(key, value)
+# w = Watcher()
+# d = w.dict_avalible_move_figures(pl1.cor_white(), board)
+#
+# for key, value in d.items():
+#     print(key, value)
