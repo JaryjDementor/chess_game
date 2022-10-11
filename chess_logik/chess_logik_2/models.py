@@ -1,6 +1,4 @@
 from figures import Pawn, Rook, Bishop, Knight, Watcher, King, Queen
-from dataclasses import make_dataclass
-
 
 class Board():
 
@@ -98,14 +96,9 @@ class Cor_Figures(Chess_Figures):
             coordinates.append([i, i.name, i.field])
         return coordinates
 
-
-
-
 class User(Cor_Figures):
     def __init__(self, name):
         self.name = name
-
-
 
 class Player1(User):
     taken_figure = []
@@ -113,10 +106,6 @@ class Player1(User):
     def list_figures(self):
         figures = self.cor_white()
         return figures
-
-
-
-
 
 class Player2(User):
     taken_figure = []
