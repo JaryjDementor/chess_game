@@ -39,24 +39,6 @@ class Game():
                 print('Incorrect request')
 
 
-            #     figure_dest_field = get_figure_dest_field(pl1.cor_white())
-            #     try:
-            #         figure, dest_field  = figure_dest_field
-            #         if figure.make_move(board, dest_field):
-            #             queue = 'player2'
-            #
-            #     except ValueError:
-            #         print('Incorrect request')
-            #
-            # elif queue == 'player2':
-            #     figure_dest_field = get_figure_dest_field(pl1.cor_white())
-            #     try:
-            #         figure, dest_field = figure_dest_field
-            #         if figure.make_move(board, dest_field):
-            #             queue = 'player1'
-            #     except ValueError:
-            #         print('Incorrect request')
-
 
 
 

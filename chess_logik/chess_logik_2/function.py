@@ -1,5 +1,20 @@
+from figures import Pawn, Rook, Bishop, Knight, King, Queen
 
-def letter_to_number(field):  # example: a1 > 1.1; c1 > 3.1
+
+def get_figure(figure):
+    dict_class_figurs = {'k': King,
+         'q': Queen,
+         'r': Rook,
+         'b': Bishop,
+         'kn': Knight,
+         'p': Pawn}
+    if figure[2:] in dict_class_figurs:
+        return dict_class_figurs[figure[2:]]
+    else:
+        raise ValueError('Not exist figure')
+
+def letter_to_number(field):
+    # example: a1 > 1.1; c1 > 3.1
     letters_board = ["a", "b", "c", "d", "e", "f", "g", "h"]
     numbers_board = ['8', '7', '6', '5', '4', '3', '2', '1']
     board = [str(i) + str(j) for i in letters_board for j in numbers_board]
@@ -21,38 +36,24 @@ def get_figure_dest_field(cor_figures):
             return [i[0], numeric_step]
 
 
+def change_pawn_with_any_figure(cor_figures, taken_figures, cor_figurs):
+    color = 'white'
+    pawn = 'w_p'
+    index_desk = '0'
+    if cor_figures[0][1] == 'b':
+        color = 'black'
+        pawn = 'b_p'
+        index_desk = '7'
+    choice_player = None
 
-
-    # try:
-    #     figure_from_desk = desk[int(numeric_field[0])][int(numeric_field[-1])]
-    #     float(numeric_field)
-    #     float(numeric_step)
-    #     if figure_from_desk != figure:
-    #         for i in cor_figures:
-    #             if i[-1] == numeric_field:
-    #                 return [i[0], numeric_step]
-    #     else:
-    #         print('Not exist figure')
-    #
-    # except TypeError:
-    #     print('Not exist field')
-
-
-
-    #     try:
-    #         get_field(field)
-    #         numeric_field = get_field(field)
-    #         if desk[int(numeric_field[0])][int(numeric_field[-1])] == figure:
-    #             step = input('step - ')
-    #             if step == 'short castling' or step == 'long castling':
-    #                 return [figure, numeric_field, step]
-    #             numeric_step = letter_to_number1(step)
-    #             return [figure, numeric_field, numeric_step]
-    #
-    #         print('Not exist figure')
-    #     except ValueError:
-    #         print('Not exist field')
-    #     except IndexError:
-    #         print('Not exist field')
-    # except ValueError:
-    #     print('Not exist figure')
+    if taken_figures:
+        for i in cor_figurs:
+            if i[1] == pawn and i[-1][0] == index_desk:
+                print(taken_figures)
+                while choice_player not in taken_figures:
+                    choice_player = input('Please choose a figure: ')
+                figure = get_figure(choice_player)(color, i[-1], choice_player)
+                cor_figurs.remove(i)
+                cor_figurs.append([figure, figure.name, figure.field])
+                taken_figures.remove(choice_player)
+                break

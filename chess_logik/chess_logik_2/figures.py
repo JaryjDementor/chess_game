@@ -19,10 +19,7 @@ class Figure():
             return True
 
 
-
 class Pawn(Figure):
-
-
 
     def first_move(self, list_move, desk):
         first_step = -2
@@ -192,6 +189,7 @@ class Knight(Figure):
 
 
 class Queen(Figure):
+
     def list_available_moves(self, desk):
         b = 'w_b'
         r = 'w_r'
@@ -205,7 +203,6 @@ class Queen(Figure):
         list_move_queen = list_moves_bishop.__add__(list_moves_rook)
 
         return list_move_queen
-
 
 class King(Figure):
     def list_available_moves(self, desk):
@@ -313,6 +310,7 @@ class King(Figure):
 
 
 class Watcher():
+
     def dict_avalible_move_figures(self, cor_figures, desk):
         #zwraca dict key-figure, value-list_avalible_move
         dict_avalible_moves = {}
