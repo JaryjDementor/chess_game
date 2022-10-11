@@ -1,3 +1,4 @@
+import copy
 
 class Figure():
     move = True
@@ -240,6 +241,7 @@ class King(Figure):
         return list_moves
 
     def castling_king(self, list_moves, cor_opponents_figures, cor_figures, desk):
+        # sprawdza czy mozliwa jest roszada
         king_cor = '7.4'
         rook = 'w_r'
         if self.color == 'black':
@@ -267,7 +269,8 @@ class King(Figure):
                 except ValueError:
                     break
 
-    def make_castling(self, cor_figures, step):  # +
+    def make_castling(self, cor_figures, step):
+        # robie roszade na desce (wpisuje odpowiednie kordynaty do krola i wierzy)
         short_castling = [['w_k', '7.4', '7.6'], ['w_r', '7.7', '7.5']]
         long_castling = [['w_k', '7.4', '7.1'], ['w_r', '7.0', '7.2']]
 
@@ -285,6 +288,7 @@ class King(Figure):
                 key[0].field = castling[1][-1]
 
     def make_move(self, dest_field, desk, cor_opponents_figures, cor_figures):
+        # wykonuje ruch
         list_moves = self.list_available_moves(desk)
 
         watcher = Watcher()
@@ -308,31 +312,9 @@ class King(Figure):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Watcher():
     def dict_avalible_move_figures(self, cor_figures, desk):
+        #zwraca dict key-figure, value-list_avalible_move
         dict_avalible_moves = {}
 
         for i in cor_figures:
@@ -371,7 +353,7 @@ class Watcher():
         return possible_fields
 
     def search_possible_figure(self, cor_figures, kings_cor, desk, possible_fields):
-
+        # wyszukuje figure ktora moze uratowac krola od zagrazenia
         list_possible_figure = []
 
         dict_avalible_move = self.dict_avalible_move_figures(cor_figures, desk)
@@ -383,4 +365,36 @@ class Watcher():
                     list_possible_figure.append([kej[0], kej[-1], i])
 
         return list_possible_figure
+
+    def check_list_avoiding_checkmate(self, list_avoiding_checkmate, kings_cor, color, desk):
+        for i in list_avoiding_checkmate[-1::-1]:
+            desk_checmate_check = copy.deepcopy(desk)
+            desk_checmate_check[int(i[1][0])][int(i[1][-1])] = i[1]
+            desk_checmate_check[int(i[-1][0])][int(i[-1][-1])] = i[0]
+            kings_field = None
+
+
+
+    def avoiding_checkmate(self, kings_cor, desk, field, cor_figures, cor_opponents_figures):
+        king = None
+        color = 'white'
+        color_oponents = 'black'
+        if kings_cor[0][0] == 'b':
+            color = 'black'
+            color_oponents = 'white'
+        possible_fields = self.search_possible_fields(kings_cor, field)
+        possible_figure = self.search_possible_figure(cor_figures, kings_cor, desk, possible_fields)
+
+        for i in cor_figures:
+            if kings_cor[0] in i:
+                king = i[0]
+        list_move_king = king.list_available_moves(desk)
+
+        dict_avalible_moves_opponents = self.dict_avalible_move_figures(cor_opponents_figures, desk)
+        for i in list_move_king[-1::1]:
+            for value in dict_avalible_moves_opponents.values():
+                if i in value:
+                    list_move_king.remove(i)
+
+        list_avoiding_checkmate = possible_figure.__add__(list_move_king)
 
