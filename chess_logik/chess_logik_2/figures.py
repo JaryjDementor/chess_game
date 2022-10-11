@@ -362,39 +362,51 @@ class Watcher():
         for i in possible_fields:
             for kej, value in dict_avalible_move.items():
                 if i in value:
-                    list_possible_figure.append([kej[0], kej[-1], i])
+                    list_possible_figure.append([kej[0], kej[1], kej[-1], i])
 
         return list_possible_figure
 
-    def check_list_avoiding_checkmate(self, list_avoiding_checkmate, kings_cor, color, desk):
+    def check_list_avoiding_checkmate(self, list_avoiding_checkmate, kings_cor, desk, cor_opponents_figures):
+        # tworze kopie deski i robie krok z list_avoiding_checkmate
         for i in list_avoiding_checkmate[-1::-1]:
             desk_checmate_check = copy.deepcopy(desk)
-            desk_checmate_check[int(i[1][0])][int(i[1][-1])] = i[1]
-            desk_checmate_check[int(i[-1][0])][int(i[-1][-1])] = i[0]
+            desk_checmate_check[int(i[2][0])][int(i[2][-1])] = i[2]
+            desk_checmate_check[int(i[-1][0])][int(i[-1][-1])] = i[1]
             kings_field = None
 
+            # wyciagam aktualne kordynaty krola
+            for j in desk_checmate_check:
+                for k in j:
+                    if k == kings_cor[0]:
+                        kings_field = str(desk_checmate_check.index(j)) + '.' + str(j.index(k))
 
+            dict_avalible_move_oponents = self.dict_avalible_move_figures(cor_opponents_figures, desk_checmate_check)
+
+            # sprawcdazam czy po zrobionym kroku, krol dalej jest zagrozony
+            for j in dict_avalible_move_oponents.values():
+                if kings_field in j:
+                    list_avoiding_checkmate.remove(i)
+                    break
+        return list_avoiding_checkmate
 
     def avoiding_checkmate(self, kings_cor, desk, field, cor_figures, cor_opponents_figures):
+        # funkcja szuka wszystkie mozliwe ruchy ktorzy moga urotowac krola
+        # + w tym mozliwy ruchy krola ktore moga zapobiec zagrozenia
         king = None
-        color = 'white'
-        color_oponents = 'black'
-        if kings_cor[0][0] == 'b':
-            color = 'black'
-            color_oponents = 'white'
+        list_move_king = []
         possible_fields = self.search_possible_fields(kings_cor, field)
         possible_figure = self.search_possible_figure(cor_figures, kings_cor, desk, possible_fields)
 
         for i in cor_figures:
             if kings_cor[0] in i:
                 king = i[0]
-        list_move_king = king.list_available_moves(desk)
+        list_available_moves_king = king.list_available_moves(desk)
 
-        dict_avalible_moves_opponents = self.dict_avalible_move_figures(cor_opponents_figures, desk)
-        for i in list_move_king[-1::1]:
-            for value in dict_avalible_moves_opponents.values():
-                if i in value:
-                    list_move_king.remove(i)
+        for i in list_available_moves_king:
+            list_move_king.append([king, king.name, king.field, i])
 
         list_avoiding_checkmate = possible_figure.__add__(list_move_king)
 
+        verified_list_avoiding_checkmate = self.check_list_avoiding_checkmate(list_avoiding_checkmate, kings_cor, desk, cor_opponents_figures)
+
+        return verified_list_avoiding_checkmate
