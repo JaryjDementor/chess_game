@@ -64,13 +64,12 @@ class Pawn(Figure):
         if self.color == 'black':
             cor_x = 1
         try:
-            step = desk[int(self.field[0]) + cor_x][int(self.field[-1])][0]
-            if step != 'w' or step != 'b':
-                list_moves.append(str(int(self.field[0]) + cor_x) + '.' + self.field[-1])
-        except IndexError:
+            step = desk[int(self.field[0]) + cor_x][int(self.field[-1])]
+            float(step)
+            list_moves.append(str(int(self.field[0]) + cor_x) + '.' + self.field[-1])
+            self.first_move(list_moves, desk)
+        except ValueError:
             pass
-        # if self.move:
-        self.first_move(list_moves, desk)
 
         self.kill_figure(list_moves, desk)
 
