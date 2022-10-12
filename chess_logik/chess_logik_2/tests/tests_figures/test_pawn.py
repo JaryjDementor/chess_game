@@ -23,21 +23,21 @@ class PawnTest(TestCase):
     def test_kill_figure_white_pawn(self):
         list_move = ['5.1']
 
-        left_white_kill_figure = [['class_pawn', 'b_p', '5.0']]
-        board = self.class_board.start(self.player1, left_white_kill_figure)
+        white_pawn_left_kill_figure = [['class_pawn', 'b_p', '5.0']]
+        board = self.class_board.start(self.player1, white_pawn_left_kill_figure)
 
         self.white_pawn.kill_figure(list_move, board)
         self.assertEqual(list_move, ['5.1', '5.0'])
 
-        right_white_kill_figure = [['class_pawn', 'b_p', '5.2']]
-        board = self.class_board.start(self.player1, right_white_kill_figure)
+        white_pawn_right_kill_figure = [['class_pawn', 'b_p', '5.2']]
+        board = self.class_board.start(self.player1, white_pawn_right_kill_figure)
         list_move = ['5.1']
 
         self.white_pawn.kill_figure(list_move, board)
         self.assertEqual(list_move, ['5.1', '5.2'])
 
-        left_right_white_kill_figure = [['class_pawn', 'b_p', '5.0'], ['class_pawn', 'b_p', '5.2']]
-        board = self.class_board.start(self.player1, left_right_white_kill_figure)
+        white_pawn_left_right_kill_figure = [['class_pawn', 'b_p', '5.0'], ['class_pawn', 'b_p', '5.2']]
+        board = self.class_board.start(self.player1, white_pawn_left_right_kill_figure)
         list_move = ['5.1']
 
         self.white_pawn.kill_figure(list_move, board)
@@ -46,21 +46,21 @@ class PawnTest(TestCase):
     def test_kill_figure_black_pawn(self):
         list_move = ['2.1']
 
-        left_black_kill_figure = [['class_pawn', 'w_p', '2.2']]
-        board = self.class_board.start(self.player2, left_black_kill_figure)
+        black_pawn_left_kill_figure = [['class_pawn', 'w_p', '2.2']]
+        board = self.class_board.start(self.player2, black_pawn_left_kill_figure)
 
         self.black_pawn.kill_figure(list_move, board)
         self.assertEqual(list_move, ['2.1', '2.2'])
 
-        right_black_kill_figure = [['class_pawn', 'w_p', '2.0']]
-        board = self.class_board.start(self.player2, right_black_kill_figure)
+        black_pawn_right_kill_figure = [['class_pawn', 'w_p', '2.0']]
+        board = self.class_board.start(self.player2, black_pawn_right_kill_figure)
         list_move = ['2.1']
 
         self.black_pawn.kill_figure(list_move, board)
         self.assertEqual(list_move, ['2.1', '2.0'])
 
-        left_right_black_kill_figure = [['class_pawn', 'w_p', '2.2'], ['class_pawn', 'w_p', '2.0']]
-        board = self.class_board.start(self.player2, left_right_black_kill_figure)
+        black_pawn_left_right_kill_figure = [['class_pawn', 'w_p', '2.2'], ['class_pawn', 'w_p', '2.0']]
+        board = self.class_board.start(self.player2, black_pawn_left_right_kill_figure)
         list_move = ['2.1']
 
         self.black_pawn.kill_figure(list_move, board)
