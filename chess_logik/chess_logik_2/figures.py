@@ -27,13 +27,12 @@ class Pawn(Figure):
             first_step = 2
         field = str(int(self.field[0]) + first_step) + self.field[1:]
         step = desk[int(field[0])][int(field[-1])]
-        try:
-            float(step)
-            list_move.append(field)
-        except IndexError:
-            pass
-        except ValueError:
-            pass
+        if self.move:
+            try:
+                float(step)
+                list_move.append(field)
+            except (IndexError, ValueError):
+                pass
 
     def kill_figure(self, list_move, desk):
         cor_left = str(int(self.field[0]) - 1) + '.' + str(int(self.field[-1]) - 1)
@@ -70,8 +69,8 @@ class Pawn(Figure):
                 list_moves.append(str(int(self.field[0]) + cor_x) + '.' + self.field[-1])
         except IndexError:
             pass
-        if self.move:
-            self.first_move(list_moves, desk)
+        # if self.move:
+        self.first_move(list_moves, desk)
 
         self.kill_figure(list_moves, desk)
 

@@ -1,4 +1,4 @@
-from figures import Pawn, Rook, Bishop, Knight, Watcher, King, Queen
+from .figures import Pawn, Rook, Bishop, Knight, Watcher, King, Queen
 
 class Board():
 
@@ -120,22 +120,22 @@ class Player2(User):
 
 
 
-
-pl1 = Player1('bob')
-pl2 = Player2('ron')
-
-a = Board()
-play1 = [[1, 'w_r', '6.1'], [1, 'w_p', '6.2']]
-play2 = [[1, 'b_k', '1.1'], [1, 'b_p', '1.2']]
-board = a.start(play1, play2)
-
-for i in board:
-    print(i)
-
-figure = King('black', '1.1', 'b_k')
-# print(figure.make_move('5.1', board, play2, play1))
-print(figure.list_available_moves(board))
-print(figure.field)
+#
+# pl1 = Player1('bob')
+# pl2 = Player2('ron')
+#
+# a = Board()
+# play1 = [[1, 'w_r', '6.1'], [1, 'w_p', '6.2']]
+# play2 = [[1, 'b_k', '1.1'], [1, 'b_p', '1.2']]
+# board = a.start(play1, play2)
+#
+# for i in board:
+#     print(i)
+#
+# figure = King('black', '1.1', 'b_k')
+# # print(figure.make_move('5.1', board, play2, play1))
+# print(figure.list_available_moves(board))
+# print(figure.field)
 # for i in cor:
 #     print(i[1], i[0].list_available_moves(board))
 
