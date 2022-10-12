@@ -66,6 +66,31 @@ class PawnTest(TestCase):
         self.black_pawn.kill_figure(list_move, board)
         self.assertEqual(list_move, ['2.1', '2.0', '2.2'])
 
+    def test_list_available_moves_white_pawn(self):
+        player2 = [['class_pawn', 'b_p', '5.0']]
+        board = self.class_board.start(self.player1, player2)
+
+        list_moves = self.white_pawn.list_available_moves(board)
+        self.assertEqual(list_moves, ['5.1', '4.1', '5.0'])
+
+        player2 = [['class_pawn', 'b_p', '5.1']]
+        board = self.class_board.start(self.player1, player2)
+
+        list_moves = self.white_pawn.list_available_moves(board)
+        self.assertEqual(list_moves, [])
+
+
+    def test_list_available_moves_black_pawn(self):
+        player1 = [['class_pawn', 'w_p', '2.2']]
+        board = self.class_board.start(player1, self.player2)
+        list_move = self.black_pawn.list_available_moves(board)
+        self.assertEqual(list_move, ['2.1', '3.1', '2.2'])
+
+        player1 = [['class_pawn', 'w_p', '2.1']]
+        board = self.class_board.start(player1, self.player2)
+
+        list_move = self.black_pawn.list_available_moves(board)
+        self.assertEqual(list_move,[])
 
 
 
