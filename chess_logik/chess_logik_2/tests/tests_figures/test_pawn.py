@@ -90,7 +90,16 @@ class PawnTest(TestCase):
         board = self.class_board.start(player1, self.player2)
 
         list_move = self.black_pawn.list_available_moves(board)
-        self.assertEqual(list_move,[])
+        self.assertEqual(list_move, [])
+
+    def test_make_move(self):
+        board = self.class_board.start(self.player1, self.player2)
+
+        self.white_pawn.make_move('5.1', board, self.player2, self.player1)
+        self.assertEqual(self.white_pawn.field, '5.1')
+
+        self.black_pawn.make_move('2.1', board, self.player1, self.player2)
+        self.assertEqual(self.black_pawn.field, '2.1')
 
 
 
