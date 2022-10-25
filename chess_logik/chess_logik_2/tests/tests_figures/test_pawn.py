@@ -20,6 +20,7 @@ class PawnTest(TestCase):
         self.assertEqual(list_move_white_pawn, ['5.1', '4.1'])
         self.assertEqual(list_move_black_pawn, ['2.1', '3.1'])
 
+
     def test_kill_figure_white_pawn(self):
         list_move = ['5.1']
 
@@ -95,6 +96,8 @@ class PawnTest(TestCase):
     def test_make_move(self):
         board = self.class_board.start(self.player1, self.player2)
 
+        for i in board:
+            print(i)
         self.white_pawn.make_move('5.1', board, self.player2, self.player1)
         self.assertEqual(self.white_pawn.field, '5.1')
 
