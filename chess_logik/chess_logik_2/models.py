@@ -66,8 +66,8 @@ class Chess_Figures():
         b_kn_1 = Knight('black', '0.6', 'b_kn')
         b_kn_2 = Knight('black', '0.1', 'b_kn')
 
-        b_b_1 = Bishop('white', '0.5', 'b_b')
-        b_b_2 = Bishop('white', '0.2', 'b_b')
+        b_b_1 = Bishop('black', '0.5', 'b_b')
+        b_b_2 = Bishop('black', '0.2', 'b_b')
 
         b_p_1 = Pawn('black', '1.0', 'b_p')
         b_p_2 = Pawn('black', '1.1', 'b_p')
