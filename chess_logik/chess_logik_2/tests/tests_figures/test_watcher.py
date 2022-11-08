@@ -49,6 +49,59 @@ class WatcherTest(TestCase):
 
         self.assertEqual(dict_avalible_avalible_move, expected_result)
 
+    def test_search_possible_fields_white(self):
+        kings_cor = ['w_k', '7.4']
+
+        cor_knight = '5.3'
+        expected_result_knight = ['5.3']
+        possible_fields = self.watcher.search_possible_fields(kings_cor, cor_knight)
+        self.assertEqual(possible_fields, expected_result_knight)
+
+        cor_rook = '3.4'
+        expected_result_rook = ['3.4', '4.4', '5.4', '6.4']
+        possible_fields = self.watcher.search_possible_fields(kings_cor, cor_rook)
+        self.assertEqual(possible_fields, expected_result_rook)
+
+        cor_bishop = '4.7'
+        expected_result_bishop = ['4.7', '5.6', '6.5']
+        possible_fields = self.watcher.search_possible_fields(kings_cor, cor_bishop)
+        self.assertEqual(possible_fields, expected_result_bishop)
+
+    def test_search_possible_fields_black(self):
+        kings_cor = ['b_k', '0.4']
+
+        cor_knight = '2.3'
+        expected_result_knight = ['2.3']
+        possible_fields = self.watcher.search_possible_fields(kings_cor, cor_knight)
+        self.assertEqual(possible_fields, expected_result_knight)
+
+        cor_rook = '3.4'
+        expected_result_rook = ['3.4', '2.4', '1.4']
+        possible_fields = self.watcher.search_possible_fields(kings_cor, cor_rook)
+        self.assertEqual(possible_fields, expected_result_rook)
+
+        cor_bishop = '3.7'
+        expected_result_bishop = ['3.7', '2.6', '1.5']
+        possible_fields = self.watcher.search_possible_fields(kings_cor, cor_bishop)
+        self.assertEqual(possible_fields, expected_result_bishop)
+
+
+
+
+        # cor_white_figure = [['w_k', 'w_k', '7.4']]
+        # cor_black_knight = [['b_kn', 'b_kn', '5.3']]
+        # cor_black_rook = [['b_r', 'b_r', '3.4']]
+        # cor_black_bishop = [['b_b', 'b_b', '4.7']]
+        #
+        # board = self.class_board.start(cor_white_figure, cor_black_bishop)
+        # for i in board:
+        #     print(i)
+
+
+        # print(possible_fields)
+
+
+
 
 
 
