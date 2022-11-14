@@ -86,6 +86,10 @@ class WatcherTest(TestCase):
         self.assertEqual(possible_fields, expected_result_bishop)
 
 
+    def test_search_possible_figure_white(self):
+        pass
+
+
 
 
         # cor_white_figure = [['w_k', 'w_k', '7.4']]
